@@ -30,6 +30,72 @@ The primary goal of data cleaning is to learn everything we can about the inform
 
 (Did we win?) The primary goals of coming to understand the data were achieved. (answers to the rambling bungle of questions above can be breifly summarized here...)
 
+### TABLE 1: all_sessions table:
+
+| column_name | What the data is or means:                                   |
+| ----------- | ------------------------------------------------------------ |
+| sku_id      | This is the primarykey for this table. Each unique id is.... |
+| name        | The name of each product item.                               |
+| stock_level | wakka wakkka yep                                             |
+| stock_level | wakka wakkka yep                                             |
+| stock_level | wakka wakkka yep                                             |
+| stock_level | wakka wakkka yep                                             |
+
+### TABLE 1: all_sessions table:
+
+| column_name | What the data is or means:                                   |
+| ----------- | ------------------------------------------------------------ |
+| sku_id      | This is the primarykey for this table. Each unique id is.... |
+| name        | The name of each product item.                               |
+| stock_level | wakka wakkka yep                                             |
+| stock_level | wakka wakkka yep                                             |
+| stock_level | wakka wakkka yep                                             |
+| stock_level | wakka wakkka yep                                             |
+
+### TABLE 1: all_sessions table:
+
+| column_name | What the data is or means:                                   |
+| ----------- | ------------------------------------------------------------ |
+| sku_id      | This is the primarykey for this table. Each unique id is.... |
+| name        | The name of each product item.                               |
+| stock_level | wakka wakkka yep                                             |
+| stock_level | wakka wakkka yep                                             |
+| stock_level | wakka wakkka yep                                             |
+| stock_level | wakka wakkka yep                                             |
+
+### TABLE 1: all_sessions table:
+
+| column_name | What the data is or means:                                   |
+| ----------- | ------------------------------------------------------------ |
+| sku_id      | This is the primarykey for this table. Each unique id is.... |
+| name        | The name of each product item.                               |
+| stock_level | wakka wakkka yep                                             |
+| stock_level | wakka wakkka yep                                             |
+| stock_level | wakka wakkka yep                                             |
+| stock_level | wakka wakkka yep                                             |
+
+### TABLE 1: all_sessions table:
+
+| column_name | What the data is or means:                                   |
+| ----------- | ------------------------------------------------------------ |
+| sku_id      | This is the primarykey for this table. Each unique id is.... |
+| name        | The name of each product item.                               |
+| stock_level | wakka wakkka yep                                             |
+| stock_level | wakka wakkka yep                                             |
+| stock_level | wakka wakkka yep                                             |
+| stock_level | wakka wakkka yep                                             |
+
+### TABLE 1: all_sessions table:
+
+| column_name | What the data is or means:                                   |
+| ----------- | ------------------------------------------------------------ |
+| sku_id      | This is the primarykey for this table. Each unique id is.... |
+| name        | The name of each product item.                               |
+| stock_level | wakka wakkka yep                                             |
+| stock_level | wakka wakkka yep                                             |
+| stock_level | wakka wakkka yep                                             |
+| stock_level | wakka wakkka yep                                             |
+
 ## Methods and Procedure: Queries
 
 .....(and this is how I did it)
