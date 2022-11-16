@@ -104,11 +104,44 @@ The primary goal of data cleaning is to learn everything we can about the inform
 
 #### Useful Merges?:
 
-_Concatenation_:
+_SQL CONCATENATION_:
 
 ```sql
+-- Some systems (like SQL Server) use +, but || is the SQL standard.
 SELECT surname||', '||firstname
 FROM cd.members;
+-- REF: https://pgexercises.com/questions/string/concat.html
+```
+
+_SQL COALESCE_
+
+```SQL
+-- COALESCE takes a list of input values and returns the first value that IS NOT NULL
+WITH class_count AS (
+SELECT student_id, COUNT(*) AS num_of_class
+FROM class_history
+GROUP BY student_id
+)
+SELECT
+COALESCE(c.student_id, s.student_id) AS student_id,
+s.student_name,
+COALESCE(c.num_of_class, 0) AS num_of_class
+FROM class_count c
+_____ student s ON c.student_id = s.student_id
+```
+
+_SQL EXTRACT_
+
+```SQL
+-- Extract time components from timestamps to summarize data:
+SELECT
+	  facid
+	, EXTRACT(MONTH FROM starttime) AS month
+	, SUM(slots) AS total
+FROM cd.bookings
+WHERE EXTRACT(YEAR FROM starttime) = 2012
+GROUP BY 1, 2
+ORDER BY 1, 2;
 ```
 
 #### Useful splits?:
@@ -121,6 +154,29 @@ FROM cd.members;
 
 ```sql
 
+```
+
+#### Create a table to query using WITH:
+
+_SQL WITH_
+
+```sql
+-- This ex is of a SQL query which finds: total # of classes taken, for all students (past and present) who've taken >= 1 class.
+-- The result set has the student ID, name, and the # of classes taken.
+
+-- The temp table
+WITH class_count AS (
+SELECT student_id, COUNT(*) AS num_of_class
+FROM class_history
+GROUP BY student_id
+)
+-- Subsequent query
+SELECT
+COALESCE(c.student_id, s.student_id) AS student_id,
+s.student_name,
+COALESCE(c.num_of_class, 0) AS num_of_class
+FROM class_count c
+_____ student s ON c.student_id = s.student_id
 ```
 
 ### STEP 2: Cleaning the Issues Found in Orientation.
@@ -171,16 +227,38 @@ Get to know the table.
 
 #### Group values: Consistency?
 
-_SQL Like_
+_SQL LIKE_
 
 ```sql
 -- find values by string values to find typos etc
 -- This ex: Find all facilities whose name BEGINS with 'Tennis'
 SELECT * FROM cd.facilities
-WHERE name LIKE 'Tennis%'
+WHERE UPPER(name) LIKE 'TENNIS%'
 -- This ex: Find all facilities whose name CONTAINS  'Tennis'
 SELECT * FROM cd.facilities
-WHERE name LIKE '%Tennis%'
+WHERE UPPER(name) LIKE '%TENNIS%'
+-- Strings can be searched using the regex  ~ operator too. this ex looks for '()'
+SELECT memid, telephone FROM cd.members
+WHERE telephone ~ '[()]';
+
+```
+
+_SQL LPAD_
+
+```sql
+-- This example pads member zipcodes with zeros
+SELECT LPAD(CAST(zipcode AS CHAR(5)),5,'0') zip
+FROM cd.members
+ORDER BY zip;
+```
+
+_SQL TRANSLATE_
+
+```sql
+-- This ex takes the '-() ' symbols out of the phonenumbers list and replaces them with the empty string (TRANSLATE(input string, CHARs to remove, new chars))
+SELECT memid, TRANSLATE(telephone, '-() ', '') AS telephone
+FROM cd.members
+ORDER BY memid;
 ```
 
 #### Number of unique/duplicate values:
@@ -205,6 +283,20 @@ if there are, what do you know enough about the data to decide if they are appro
 
 ### STEP 3: Transforming the Data
 
+> "The first phase of data transformations should include things like data type conversion and flattening of hierarchical data...
+
+> Parsing fields out of comma-delimited log data for loading to a relational database is an example of this type of data transformation....
+
+> Data transformation is often concerned with whittling data down and making it more manageable. Data may be consolidated by filtering out unnecessary fields, columns, and records. Omitted data might include numerical indexes in data intended for graphs and dashboards or records from business regions that aren’t of interest in a particular study...
+
+> Data might also be aggregated or summarized. by, for instance, transforming a time series of customer transactions to hourly or daily sales counts.
+
+- A customer’s transactions can be rolled up into a grand total and added into a customer information table for quicker reference or for use by customer analytics systems.
+- Long or freeform fields may be split into multiple columns,
+- and missing values can be imputed or corrupted data replaced as a result of these kinds of transformations."
+
+REF: https://www.stitchdata.com/resources/data-transformation/
+
 ### STEP 4: Load Data Back into the DB
 
 ---
@@ -220,3 +312,6 @@ _Abreviations?_
 ## References
 
 1. Surname, F. (2021) Title title of titleynesses of article. _Name of Page._ https://urly-ish.ness.business/goods.live.here
+
+1. https://pgexercises.com/questions/string/concat.html
+1. https://www.stitchdata.com/resources/data-transformation/
