@@ -102,20 +102,22 @@ The primary goal of data cleaning is to learn everything we can about the inform
 
 ### STEP 1: Getting Oriented with the Data.
 
-Useful Merges?
+#### Useful Merges?:
+
+_Concatenation_:
 
 ```sql
 SELECT surname||', '||firstname
 FROM cd.members;
 ```
 
-Useful splits?
+#### Useful splits?:
 
 ```sql
 
 ```
 
-Create (Temp?) new table:
+#### Create (Temp?) new table:
 
 ```sql
 
@@ -123,55 +125,65 @@ Create (Temp?) new table:
 
 ### STEP 2: Cleaning the Issues Found in Orientation.
 
-Renaming a table:
+Get to know the table.
+
+#### Renaming a table:
 
 ```sql
 
 ```
 
-Determine the size of the table:
+#### Determine the size of the table:
 
 ```sql
 
 ```
 
-Check for column duplications:
+#### Check for column duplications:
 
 ```sql
 
 ```
 
-Check for row duplications:
+#### Check for row duplications:
 
 ```sql
 
 ```
 
-Renaming a column:
+#### Renaming a column:
 
 ```sql
 
 ```
 
-Sort column values:
+#### Sort column values:
 
 ```sql
 
 ```
 
-Count column values:
+#### Count column values:
 
 ```sql
 
 ```
 
-Group values: Consistency?
+#### Group values: Consistency?
+
+_SQL Like_
 
 ```sql
-
+-- find values by string values to find typos etc
+-- This ex: Find all facilities whose name BEGINS with 'Tennis'
+SELECT * FROM cd.facilities
+WHERE name LIKE 'Tennis%'
+-- This ex: Find all facilities whose name CONTAINS  'Tennis'
+SELECT * FROM cd.facilities
+WHERE name LIKE '%Tennis%'
 ```
 
-Number of unique/duplicate values:
+#### Number of unique/duplicate values:
 
 ```sql
 
@@ -179,13 +191,13 @@ Number of unique/duplicate values:
 
 if there are, what do you know enough about the data to decide if they are appropriate or not yet?
 
-Statistical summary of the categorical values:
+#### Statistical summary of the categorical values:
 
 ```sql
 
 ```
 
-Statistical summary of the numerical values: Are there ouliers?
+#### Statistical summary of the numerical values: Are there ouliers?
 
 ```sql
 
