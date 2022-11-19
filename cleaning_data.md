@@ -30,11 +30,9 @@ The primary goal of data cleaning is to learn everything we can about the inform
 
 (Did we win?) The primary goals of coming to understand the data were achieved. (answers to the rambling bungle of questions above can be breifly summarized here...)
 
-### TABLE 1: all_sessions table:
+### TABLE 1: all_sessions: [15,134 rows, 33 columns]
 
-15,134 rows
-
-| column_name                | Distinct | NULLs | What the data is or means:                                                |
+| Column Name                | Distinct | NULLs | Definition of contained values:                                           |
 | -------------------------- | -------- | ----- | ------------------------------------------------------------------------- |
 | full_visitor_id            | 14223    | 0     | The unique visitor id                                                     |
 | channel_grouping           | 7        | 0     | Default Channel Group per session View for the user                       |
@@ -84,11 +82,9 @@ The primary goal of data cleaning is to learn everything we can about the inform
 1.  = Refund of purchase
 1.  = Checkout options
 
-### TABLE 1: analytics table:
+### TABLE 2: analytics: [4,301,122 rows, 15 columns]
 
-- 4,301,122 rows
-
-| column_name            | Distinct | NULLs     | What the data is or means:                             |
+| Column Name            | Distinct | NULLs     | Definition of contained values:                        |
 | ---------------------- | -------- | --------- | ------------------------------------------------------ |
 | visit_number           | 222      | 0         | The session number                                     |
 | visit_id               | 148,642  | 0         | The name of each product item.                         |
@@ -105,55 +101,99 @@ The primary goal of data cleaning is to learn everything we can about the inform
 | revenue                | 5270     | 4,285,767 |                                                        |
 | unit_price             | 1442     | 0         |                                                        |
 
-### TABLE 1: all_sessions table:
+### TABLE 3: products: [ rows, 8 columns]
 
-| column_name | What the data is or means:                                   |
-| ----------- | ------------------------------------------------------------ |
-| sku_id      | This is the primarykey for this table. Each unique id is.... |
-| name        | The name of each product item.                               |
-| stock_level | wakka wakkka yep                                             |
-| stock_level | wakka wakkka yep                                             |
-| stock_level | wakka wakkka yep                                             |
-| stock_level | wakka wakkka yep                                             |
+| Column Name            | Distinct | NULLs     | Definition of contained values:                        |
+| ---------------------- | -------- | --------- | ------------------------------------------------------ |
+| visit_number           | 222      | 0         | The session number                                     |
+| visit_id               | 148,642  | 0         | The name of each product item.                         |
+| visit_start_time       | 148,853  | 0         | Timestamp _as POSIX time format_                       |
+| date                   | 93       | 0         | Date of the visit record                               |
+| full_visitor_id        | 120,018  | 0         | The unique visitor id                                  |
+| user_id                | NULL     | all       | This column will be deleted                            |
+| channel_grouping       | 8        | 0         | Default Channel Group per session View for the user    |
+| social_engagement_type | 1        | 0         | This column will be deleted                            |
+| units_sold             | 135      | 95,147    |                                                        |
+| page_views             | 129      | 72        | (totals.) Number of page views from within the session |
+| time_on_site           | 3270     | 477,465   | (totals.) _in seconds_                                 |
+| bounces                | 1        | 3,826,283 |                                                        |
+| revenue                | 5270     | 4,285,767 |                                                        |
+| unit_price             | 1442     | 0         |                                                        |
 
-### TABLE 1: all_sessions table:
+### TABLE 4: sales_by_sku: [ rows, 3 columns]
 
-| column_name | What the data is or means:                                   |
-| ----------- | ------------------------------------------------------------ |
-| sku_id      | This is the primarykey for this table. Each unique id is.... |
-| name        | The name of each product item.                               |
-| stock_level | wakka wakkka yep                                             |
-| stock_level | wakka wakkka yep                                             |
-| stock_level | wakka wakkka yep                                             |
-| stock_level | wakka wakkka yep                                             |
+| Column Name            | Distinct | NULLs     | Definition of contained values:                        |
+| ---------------------- | -------- | --------- | ------------------------------------------------------ |
+| visit_number           | 222      | 0         | The session number                                     |
+| visit_id               | 148,642  | 0         | The name of each product item.                         |
+| visit_start_time       | 148,853  | 0         | Timestamp _as POSIX time format_                       |
+| date                   | 93       | 0         | Date of the visit record                               |
+| full_visitor_id        | 120,018  | 0         | The unique visitor id                                  |
+| user_id                | NULL     | all       | This column will be deleted                            |
+| channel_grouping       | 8        | 0         | Default Channel Group per session View for the user    |
+| social_engagement_type | 1        | 0         | This column will be deleted                            |
+| units_sold             | 135      | 95,147    |                                                        |
+| page_views             | 129      | 72        | (totals.) Number of page views from within the session |
+| time_on_site           | 3270     | 477,465   | (totals.) _in seconds_                                 |
+| bounces                | 1        | 3,826,283 |                                                        |
+| revenue                | 5270     | 4,285,767 |                                                        |
+| unit_price             | 1442     | 0         |                                                        |
 
-### TABLE 1: all_sessions table:
+### TABLE 5: sales_report: [ rows, 9 columns]
 
-| column_name | What the data is or means:                                   |
-| ----------- | ------------------------------------------------------------ |
-| sku_id      | This is the primarykey for this table. Each unique id is.... |
-| name        | The name of each product item.                               |
-| stock_level | wakka wakkka yep                                             |
-| stock_level | wakka wakkka yep                                             |
-| stock_level | wakka wakkka yep                                             |
-| stock_level | wakka wakkka yep                                             |
-
-### TABLE 1: all_sessions table:
-
-| column_name | What the data is or means:                                   |
-| ----------- | ------------------------------------------------------------ |
-| sku_id      | This is the primarykey for this table. Each unique id is.... |
-| name        | The name of each product item.                               |
-| stock_level | wakka wakkka yep                                             |
-| stock_level | wakka wakkka yep                                             |
-| stock_level | wakka wakkka yep                                             |
-| stock_level | wakka wakkka yep                                             |
+| Column Name            | Distinct | NULLs     | Definition of contained values:                        |
+| ---------------------- | -------- | --------- | ------------------------------------------------------ |
+| visit_number           | 222      | 0         | The session number                                     |
+| visit_id               | 148,642  | 0         | The name of each product item.                         |
+| visit_start_time       | 148,853  | 0         | Timestamp _as POSIX time format_                       |
+| date                   | 93       | 0         | Date of the visit record                               |
+| full_visitor_id        | 120,018  | 0         | The unique visitor id                                  |
+| user_id                | NULL     | all       | This column will be deleted                            |
+| channel_grouping       | 8        | 0         | Default Channel Group per session View for the user    |
+| social_engagement_type | 1        | 0         | This column will be deleted                            |
+| units_sold             | 135      | 95,147    |                                                        |
+| page_views             | 129      | 72        | (totals.) Number of page views from within the session |
+| time_on_site           | 3270     | 477,465   | (totals.) _in seconds_                                 |
+| bounces                | 1        | 3,826,283 |                                                        |
+| revenue                | 5270     | 4,285,767 |                                                        |
+| unit_price             | 1442     | 0         |                                                        |
 
 ## Methods and Procedure: Queries
 
 .....(and this is how I did it)
 
 ### STEP 1: Getting Oriented with the Data.
+
+Consistent naming conventions were first established with the column and table names for simpler interactions with the data. Tables were titled with snake case, which is the simplest format for PGAdmin as well. An example query of this series on full_visitor_id column for all_sessions below:
+
+_ALTER TABLE to RENAME COLUMN HEADING_:
+
+```sql
+-- Rename column headings for consistency to snake case.
+ALTER TABLE public.all_sessions
+RENAME COLUMN fullVisitorId TO full_visitor_id;
+```
+
+Table shape was determined with simple select statements
+
+_SQL SELECT_:
+
+Count aggregate statements were used sequentially for an initial broad overview of the qantity, type, and quality of the data in each column. The results of these were populated into Tables 1-5 in Discussion. An example query of this series on full_visitor_id column for all_sessions below:
+
+_SQL DISTINCT and COUNT()_:
+
+```sql
+-- List of distinct value types, and their respective counts:
+SELECT DISTINCT full_visitor_id, COUNT(full_visitor_id)
+FROM all_sessions
+GROUP BY 1
+ORDER BY 2 DESC;
+
+-- Evaluate NULL content:
+SELECT COUNT(*)
+FROM all_sessions
+WHERE full_visitor_id IS NULL;
+```
 
 #### Useful Merges?:
 
