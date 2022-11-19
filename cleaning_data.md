@@ -32,14 +32,15 @@ The primary goal of data cleaning is to learn everything we can about the inform
 
 ### TABLE 1: all_sessions table:
 
-| column_name | What the data is or means:                                   |
-| ----------- | ------------------------------------------------------------ |
-| sku_id      | This is the primarykey for this table. Each unique id is.... |
-| name        | The name of each product item.                               |
-| stock_level | wakka wakkka yep                                             |
-| stock_level | wakka wakkka yep                                             |
-| stock_level | wakka wakkka yep                                             |
-| stock_level | wakka wakkka yep                                             |
+| column_name               | Distinct | NULLs | What the data is or means:            |
+| ------------------------- | -------- | ----- | ------------------------------------- |
+| full_visitor_id           | 14223    | 0     |                                       |
+| channel_grouping          | 7        | 0     | channel of traffic - google analytics |
+| time                      |          |       |                                       |
+| country                   |          |       |                                       |
+| city                      |          |       |                                       |
+| total_transaction_revenue |          |       |                                       |
+| stock_level               |          |       |                                       |
 
 ### TABLE 1: all_sessions table:
 
@@ -196,6 +197,35 @@ Get to know the table.
 ```
 
 #### Check for column duplications:
+
+Finding full row duplications in a table:
+
+```sql
+-- Row duplications checked in all_sessions:
+WITH dup_rows AS (
+	SELECT fullvisitorid
+		, channelgrouping
+		, time
+		, country
+		, city
+		, visitid
+-- 		, productsku
+		, COUNT(*) AS num_rows
+	FROM all_sessions
+	GROUP BY 1,2,3,4,5,6
+	HAVING COUNT(*) > 1)
+
+SELECT *
+FROM all_sessions al
+JOIN dup_rows d
+ON al.fullvisitorid = d.fullvisitorid
+AND al.time = d.time
+-- AND al.productsku = d.productsku
+
+/* NOTE: all_sessions appeared to have 453 counted duplications
+within all columns except productsku, and none once included.
+ Which implies 453 instances of a user purchasing > 1 product */
+```
 
 ```sql
 
