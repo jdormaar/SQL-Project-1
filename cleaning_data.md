@@ -42,16 +42,26 @@ The primary goal of data cleaning is to learn everything we can about the inform
 | total_transaction_revenue |          |       |                                       |
 | stock_level               |          |       |                                       |
 
-### TABLE 1: all_sessions table:
+### TABLE 1: analytics table:
 
-| column_name | What the data is or means:                                   |
-| ----------- | ------------------------------------------------------------ |
-| sku_id      | This is the primarykey for this table. Each unique id is.... |
-| name        | The name of each product item.                               |
-| stock_level | wakka wakkka yep                                             |
-| stock_level | wakka wakkka yep                                             |
-| stock_level | wakka wakkka yep                                             |
-| stock_level | wakka wakkka yep                                             |
+- 4,301,122 rows
+
+| column_name            | Distinct | NULLs     | What the data is or means:                        |
+| ---------------------- | -------- | --------- | ------------------------------------------------- |
+| visit_number           | 222      | 0         | The number of times an individual visits the site |
+| visit_id               | 148,642  | 0         | The name of each product item.                    |
+| visit_start_time       | 148,853  | 0         |                                                   |
+| date                   | 93       | 0         |                                                   |
+| full_visitor_id        | 120,018  | 0         |                                                   |
+| user_id                | null     | all       | This column will be deleted                       |
+| channel_grouping       | 8        | 0         | channel of traffic - google analytics             |
+| social_engagement_type | 1        | 0         | this column will be deleted                       |
+| units_sold             | 135      | 95,147    |                                                   |
+| page_views             | 129      | 72        |                                                   |
+| time_on_site           | 3270     | 477,465   |                                                   |
+| bounces                | 1        | 3,826,283 |                                                   |
+| revenue                | 5270     | 4,285,767 |                                                   |
+| unit_price             | 1442     | 0         |                                                   |
 
 ### TABLE 1: all_sessions table:
 
@@ -201,7 +211,7 @@ Get to know the table.
 Finding full row duplications in a table:
 
 ```sql
--- Row duplications checked in all_sessions:
+-- Row duplications in all_sessions:
 WITH dup_rows AS (
 	SELECT fullvisitorid
 		, channelgrouping
@@ -228,7 +238,29 @@ within all columns except productsku, and none once included.
 ```
 
 ```sql
+-- Row duplications in analytics
+WITH dup_rows AS (
+	SELECT visitnumber
+		, visitid
+		, visitstarttime
+		, date
+		, fullvisitorid
+		, channelgrouping
+		, unit_price
+		, COUNT(*) AS num_rows
+	FROM analytics an
+	GROUP BY 1,2,3,4,5,6,7
+	HAVING COUNT(*) > 1)
 
+SELECT *
+FROM analytics an
+JOIN dup_rows d
+ON an.visitid = d.visitid
+AND an.visitstarttime = d.visitstarttime
+AND an.unit_price = d.unit_price
+-- Current parameters appear to show 3,492,284 duplicate rows.
+
+-- Further inquiry required.
 ```
 
 #### Check for row duplications:
