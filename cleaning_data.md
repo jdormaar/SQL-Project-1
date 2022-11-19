@@ -34,41 +34,41 @@ The primary goal of data cleaning is to learn everything we can about the inform
 
 15,134 rows
 
-| column_name                | Distinct | NULLs | What the data is or means:                                     |
-| -------------------------- | -------- | ----- | -------------------------------------------------------------- |
-| full_visitor_id            | 14223    | 0     | The unique visitor id                                          |
-| channel_grouping           | 7        | 0     | Channel of traffic - google analytics                          |
-| time,                      | 9600     | 0     | (hits.) From visit\*start*time to hit registered \_in ms*      |
-| country,                   | 136      | 0     | (geoNetwork.) Visitor's country by IP                          |
-| city,                      | 266      | 0     | (geoNetwork.) Visitor's city by IP or Geographical ID          |
-| total_transaction_revenue, | 72       | 15053 | (totals.) Total transaction revenue _multiplied by 10^6_       |
-| transactions,              | 1        | 15053 | (totals.) Number of ecommerce transactions from session record |
-| time_on_site,              | 1267     | 3300  | (totals.) Time of session _in seconds_                         |
-| page_views,                | 29       | 0     | (totals.) Number of page views from within the session         |
-| session_quality_dim,       | 45       | 13906 | (totals.) Quality estimate if 'close' or 'far' to transaction  |
-|                            |          |       | Values near: 100:'close' low:'far' 0:'not calculated'          |
-| date,                      | 366      | 0     | Date of session record                                         |
-| visit_id,                  | 14556    | 0     | Session id unique only to the user                             |
-| type,                      | 2        | 0     |                                                                |
-| product_refund_amount,     | NULL     | all   | This column will be deleted                                    |
-| product_quantity,          | 8        | 15081 |                                                                |
-| product_price,             | 141      | 0     |                                                                |
-| product_revenue,           | 4        | 15130 |                                                                |
-| product_sku,               | 536      | 0     |                                                                |
-| v2_product_name,           | 471      | 0     |                                                                |
-| v2_product_category,       | 74       | 0     |                                                                |
-| product_variant,           | 11       | 0     |                                                                |
-| currency_code,             | 1        | 272   |                                                                |
-| item_quantity,             | NULL     | all   | This column will be deleted                                    |
-| item_revenue               | NULL     | all   | This column will be deleted                                    |
-| transaction_revenue,       | 4        | 15125 | This value is deprecated, and the column will be Deleted       |
-| transaction_id,            | 9        | 15125 |                                                                |
-| page_title,                | 269      | 1     |                                                                |
-| search_keyword,            | NULL     | all   | This column will be deleted                                    |
-| page_path_level1,          | 11       | 0     |                                                                |
-| ecommerce_action_type,     | 7        | 0     | (hits.) _see ecommerce_action_type list below:_                |
-| ecommerce_action_step,     | 3        | 0     | (hits.) Indicates step at checkout specific to hit             |
-| ecommerce_action_option    | 3        | 15103 | (hits.) Option selected at checkout (ex fedex)                 |
+| column_name                | Distinct | NULLs | What the data is or means:                                                |
+| -------------------------- | -------- | ----- | ------------------------------------------------------------------------- |
+| full_visitor_id            | 14223    | 0     | The unique visitor id                                                     |
+| channel_grouping           | 7        | 0     | Default Channel Group per session View for the user                       |
+| time,                      | 9600     | 0     | (hits.) From visit\*start*time to hit registered \_in ms*                 |
+| country,                   | 136      | 0     | (geoNetwork.) Visitor's country by IP                                     |
+| city,                      | 266      | 0     | (geoNetwork.) Visitor's city by IP or Geographical ID                     |
+| total_transaction_revenue, | 72       | 15053 | (totals.) Total transaction revenue _multiplied by 10^6_                  |
+| transactions,              | 1        | 15053 | (totals.) Number of ecommerce transactions from session record            |
+| time_on_site,              | 1267     | 3300  | (totals.) Time of session _in seconds_                                    |
+| page_views,                | 29       | 0     | (totals.) Number of page views from within the session                    |
+| session_quality_dim,       | 45       | 13906 | (totals.) Quality estimate if 'close' or 'far' to transaction             |
+|                            |          |       | Values near: 100:'close' 1:'far' 0:'not calculated'                       |
+| date,                      | 366      | 0     | Date of session record                                                    |
+| visit_id,                  | 14556    | 0     | Session id unique only to the user                                        |
+| type,                      | 2        | 0     | (hits.) one of PAGE, TRANSACTION, ITEM, EVENT, SOCIAL, APPVIEW, EXCEPTION |
+| product_refund_amount,     | NULL     | all   | _This column will be deleted_                                             |
+| product_quantity,          | 8        | 15081 | (hits.prod.) Purchased product quantity                                   |
+| product_price,             | 141      | 0     | (hits.prod.) Product price _multiplied by 10^6_                           |
+| product_revenue,           | 4        | 15130 | (hits.prod.) Product revenue _multiplied by 10^6_                         |
+| product_sku,               | 536      | 0     | (hits.prod.) ProductSKU                                                   |
+| v2_product_name,           | 471      | 0     | (hits.prod.) Product Name                                                 |
+| v2_product_category,       | 74       | 0     | (hits.prod.) Product Category                                             |
+| product_variant,           | 11       | 0     | (hits.prod.) Product Variant                                              |
+| currency_code,             | 1        | 272   | (hits.tr.) and (hits.item.) Currency code for transaction                 |
+| item_quantity,             | NULL     | all   | _This column will be deleted_                                             |
+| item_revenue               | NULL     | all   | _This column will be deleted_                                             |
+| transaction_revenue,       | 4        | 15125 | (hits.tr.) Transaction revenue _multiplied by 10^6_                       |
+| transaction_id,            | 9        | 15125 | (hits.tr.) Transaction id of the ecommerce transaction                    |
+| page_title,                | 269      | 1     | (hits.page.)Title of Page                                                 |
+| search_keyword,            | NULL     | all   | _Would have contained search word keywords - This column will be deleted_ |
+| page_path_level1,          | 11       | 0     | (hits.page.) All the page paths rolled into the 1st hierarchical level    |
+| ecommerce_action_type,     | 7        | 0     | (hits.) _see ecommerce_action_type list below:_                           |
+| ecommerce_action_step,     | 3        | 0     | (hits.) Indicates step at checkout specific to hit                        |
+| ecommerce_action_option    | 3        | 15103 | (hits.) Option selected at checkout (ex fedex)                            |
 
 | ecommerce_action_type |
 | --------------------- |
@@ -96,7 +96,7 @@ The primary goal of data cleaning is to learn everything we can about the inform
 | date                   | 93       | 0         | Date of the visit record                               |
 | full_visitor_id        | 120,018  | 0         | The unique visitor id                                  |
 | user_id                | NULL     | all       | This column will be deleted                            |
-| channel_grouping       | 8        | 0         | Channel of traffic - google analytics                  |
+| channel_grouping       | 8        | 0         | Default Channel Group per session View for the user    |
 | social_engagement_type | 1        | 0         | This column will be deleted                            |
 | units_sold             | 135      | 95,147    |                                                        |
 | page_views             | 129      | 72        | (totals.) Number of page views from within the session |
