@@ -34,61 +34,76 @@ The primary goal of data cleaning is to learn everything we can about the inform
 
 15,134 rows
 
-| column_name                | Distinct | NULLs | What the data is or means:            |
-| -------------------------- | -------- | ----- | ------------------------------------- |
-| full_visitor_id            | 14223    | 0     |                                       |
-| channel_grouping           | 7        | 0     | channel of traffic - google analytics |
-| time,                      | 9600     | 0     |                                       |
-| country,                   | 136      | 0     |                                       |
-| city,                      | 266      | 0     |                                       |
-| total_transaction_revenue, | 72       | 15053 |                                       |
-| transactions,              | 1        | 15053 |                                       |
-| time_on_site,              | 1267     | 3300  |                                       |
-| page_views,                | 29       | 0     |                                       |
-| session_quality_dim,       | 45       | 13906 |                                       |
-| date,                      | 366      | 0     |                                       |
-| visit_id,                  | 14556    | 0     |                                       |
-| type,                      | 2        | 0     |                                       |
-| product_refund_amount,     | NULL     | all   | this column will be deleted           |
-| product_quantity,          | 8        | 15081 |                                       |
-| product_price,             | 141      | 0     |                                       |
-| product_revenue,           | 4        | 15130 |                                       |
-| product_sku,               | 536      | 0     |                                       |
-| v2_product_name,           | 471      | 0     |                                       |
-| v2_product_category,       | 74       | 0     |                                       |
-| product_variant,           | 11       | 0     |                                       |
-| currency_code,             | 1        | 272   |                                       |
-| item_quantity,             | NULL     | all   | this column will be deleted           |
-| item_revenue               | NULL     | all   | this column will be deleted           |
-| transaction_revenue,       | 4        | 15125 |                                       |
-| transaction_id,            | 9        | 15125 |                                       |
-| page_title,                | 269      | 1     |                                       |
-| search_keyword,            | NULL     | all   | this column will be deleted           |
-| page_path_level1,          | 11       | 0     |                                       |
-| ecommerce_action_type,     | 7        | 0     |                                       |
-| ecommerce_action_step,     | 3        | 0     |                                       |
-| ecommerce_action_option    | 3        | 15103 |                                       |
+| column_name                | Distinct | NULLs | What the data is or means:                                     |
+| -------------------------- | -------- | ----- | -------------------------------------------------------------- |
+| full_visitor_id            | 14223    | 0     | The unique visitor id                                          |
+| channel_grouping           | 7        | 0     | Channel of traffic - google analytics                          |
+| time,                      | 9600     | 0     | (hits.) From visit\*start*time to hit registered \_in ms*      |
+| country,                   | 136      | 0     | (geoNetwork.) Visitor's country by IP                          |
+| city,                      | 266      | 0     | (geoNetwork.) Visitor's city by IP or Geographical ID          |
+| total_transaction_revenue, | 72       | 15053 | (totals.) Total transaction revenue _multiplied by 10^6_       |
+| transactions,              | 1        | 15053 | (totals.) Number of ecommerce transactions from session record |
+| time_on_site,              | 1267     | 3300  | (totals.) Time of session _in seconds_                         |
+| page_views,                | 29       | 0     | (totals.) Number of page views from within the session         |
+| session_quality_dim,       | 45       | 13906 | (totals.) Quality estimate if 'close' or 'far' to transaction  |
+|                            |          |       | Values near: 100:'close' low:'far' 0:'not calculated'          |
+| date,                      | 366      | 0     | Date of session record                                         |
+| visit_id,                  | 14556    | 0     | Session id unique only to the user                             |
+| type,                      | 2        | 0     |                                                                |
+| product_refund_amount,     | NULL     | all   | This column will be deleted                                    |
+| product_quantity,          | 8        | 15081 |                                                                |
+| product_price,             | 141      | 0     |                                                                |
+| product_revenue,           | 4        | 15130 |                                                                |
+| product_sku,               | 536      | 0     |                                                                |
+| v2_product_name,           | 471      | 0     |                                                                |
+| v2_product_category,       | 74       | 0     |                                                                |
+| product_variant,           | 11       | 0     |                                                                |
+| currency_code,             | 1        | 272   |                                                                |
+| item_quantity,             | NULL     | all   | This column will be deleted                                    |
+| item_revenue               | NULL     | all   | This column will be deleted                                    |
+| transaction_revenue,       | 4        | 15125 | This value is deprecated, and the column will be Deleted       |
+| transaction_id,            | 9        | 15125 |                                                                |
+| page_title,                | 269      | 1     |                                                                |
+| search_keyword,            | NULL     | all   | This column will be deleted                                    |
+| page_path_level1,          | 11       | 0     |                                                                |
+| ecommerce_action_type,     | 7        | 0     | (hits.) _see ecommerce_action_type list below:_                |
+| ecommerce_action_step,     | 3        | 0     | (hits.) Indicates step at checkout specific to hit             |
+| ecommerce_action_option    | 3        | 15103 | (hits.) Option selected at checkout (ex fedex)                 |
+
+| ecommerce_action_type |
+| --------------------- |
+
+- 0 = Unknown
+
+1.  = Click through of product lists
+1.  = Product detail views
+1.  = Add product(s) to cart
+1.  = Remove product(s) from cart
+1.  = Check out
+1.  = Completed purchase
+1.  = Refund of purchase
+1.  = Checkout options
 
 ### TABLE 1: analytics table:
 
 - 4,301,122 rows
 
-| column_name            | Distinct | NULLs     | What the data is or means:                        |
-| ---------------------- | -------- | --------- | ------------------------------------------------- |
-| visit_number           | 222      | 0         | The number of times an individual visits the site |
-| visit_id               | 148,642  | 0         | The name of each product item.                    |
-| visit_start_time       | 148,853  | 0         |                                                   |
-| date                   | 93       | 0         |                                                   |
-| full_visitor_id        | 120,018  | 0         |                                                   |
-| user_id                | NULL     | all       | This column will be deleted                       |
-| channel_grouping       | 8        | 0         | channel of traffic - google analytics             |
-| social_engagement_type | 1        | 0         | this column will be deleted                       |
-| units_sold             | 135      | 95,147    |                                                   |
-| page_views             | 129      | 72        |                                                   |
-| time_on_site           | 3270     | 477,465   |                                                   |
-| bounces                | 1        | 3,826,283 |                                                   |
-| revenue                | 5270     | 4,285,767 |                                                   |
-| unit_price             | 1442     | 0         |                                                   |
+| column_name            | Distinct | NULLs     | What the data is or means:                             |
+| ---------------------- | -------- | --------- | ------------------------------------------------------ |
+| visit_number           | 222      | 0         | The session number                                     |
+| visit_id               | 148,642  | 0         | The name of each product item.                         |
+| visit_start_time       | 148,853  | 0         | Timestamp _as POSIX time format_                       |
+| date                   | 93       | 0         | Date of the visit record                               |
+| full_visitor_id        | 120,018  | 0         | The unique visitor id                                  |
+| user_id                | NULL     | all       | This column will be deleted                            |
+| channel_grouping       | 8        | 0         | Channel of traffic - google analytics                  |
+| social_engagement_type | 1        | 0         | This column will be deleted                            |
+| units_sold             | 135      | 95,147    |                                                        |
+| page_views             | 129      | 72        | (totals.) Number of page views from within the session |
+| time_on_site           | 3270     | 477,465   | (totals.) _in seconds_                                 |
+| bounces                | 1        | 3,826,283 |                                                        |
+| revenue                | 5270     | 4,285,767 |                                                        |
+| unit_price             | 1442     | 0         |                                                        |
 
 ### TABLE 1: all_sessions table:
 
@@ -404,3 +419,4 @@ _Abreviations?_
 
 1. https://pgexercises.com/questions/string/concat.html
 1. https://www.stitchdata.com/resources/data-transformation/
+1. https://support.google.com/analytics/answer/3437719?hl=en
