@@ -32,15 +32,42 @@ The primary goal of data cleaning is to learn everything we can about the inform
 
 ### TABLE 1: all_sessions table:
 
-| column_name               | Distinct | NULLs | What the data is or means:            |
-| ------------------------- | -------- | ----- | ------------------------------------- |
-| full_visitor_id           | 14223    | 0     |                                       |
-| channel_grouping          | 7        | 0     | channel of traffic - google analytics |
-| time                      |          |       |                                       |
-| country                   |          |       |                                       |
-| city                      |          |       |                                       |
-| total_transaction_revenue |          |       |                                       |
-| stock_level               |          |       |                                       |
+15,134 rows
+
+| column_name                | Distinct | NULLs | What the data is or means:            |
+| -------------------------- | -------- | ----- | ------------------------------------- |
+| full_visitor_id            | 14223    | 0     |                                       |
+| channel_grouping           | 7        | 0     | channel of traffic - google analytics |
+| time,                      | 9600     | 0     |                                       |
+| country,                   | 136      | 0     |                                       |
+| city,                      | 266      | 0     |                                       |
+| total_transaction_revenue, | 72       | 15053 |                                       |
+| transactions,              | 1        | 15053 |                                       |
+| time_on_site,              | 1267     | 3300  |                                       |
+| page_views,                | 29       | 0     |                                       |
+| session_quality_dim,       | 45       | 13906 |                                       |
+| date,                      | 366      | 0     |                                       |
+| visit_id,                  | 14556    | 0     |                                       |
+| type,                      | 2        | 0     |                                       |
+| product_refund_amount,     | NULL     | all   | this column will be deleted           |
+| product_quantity,          | 8        | 15081 |                                       |
+| product_price,             | 141      | 0     |                                       |
+| product_revenue,           | 4        | 15130 |                                       |
+| product_sku,               | 536      | 0     |                                       |
+| v2_product_name,           | 471      | 0     |                                       |
+| v2_product_category,       | 74       | 0     |                                       |
+| product_variant,           | 11       | 0     |                                       |
+| currency_code,             | 1        | 272   |                                       |
+| item_quantity,             | NULL     | all   | this column will be deleted           |
+| item_revenue               | NULL     | all   | this column will be deleted           |
+| transaction_revenue,       | 4        | 15125 |                                       |
+| transaction_id,            | 9        | 15125 |                                       |
+| page_title,                | 269      | 1     |                                       |
+| search_keyword,            | NULL     | all   | this column will be deleted           |
+| page_path_level1,          | 11       | 0     |                                       |
+| ecommerce_action_type,     | 7        | 0     |                                       |
+| ecommerce_action_step,     | 3        | 0     |                                       |
+| ecommerce_action_option    | 3        | 15103 |                                       |
 
 ### TABLE 1: analytics table:
 
@@ -53,7 +80,7 @@ The primary goal of data cleaning is to learn everything we can about the inform
 | visit_start_time       | 148,853  | 0         |                                                   |
 | date                   | 93       | 0         |                                                   |
 | full_visitor_id        | 120,018  | 0         |                                                   |
-| user_id                | null     | all       | This column will be deleted                       |
+| user_id                | NULL     | all       | This column will be deleted                       |
 | channel_grouping       | 8        | 0         | channel of traffic - google analytics             |
 | social_engagement_type | 1        | 0         | this column will be deleted                       |
 | units_sold             | 135      | 95,147    |                                                   |
