@@ -44,8 +44,6 @@ Inside pgAdmin, you can generate the ERD for the database.
 
 ![](https://i.imgur.com/KxVRJD3.png)
 
-![](erd-diagram-with-relationships.png)
-
 Download the image and save it as **schema.png**. Add this file to your repo for submission.
 
 Note: If you have created any new tables, be sure to load them into the database before printing the ERD!
