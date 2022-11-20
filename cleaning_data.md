@@ -34,6 +34,7 @@ The primary goal of data cleaning is to learn everything we can about the inform
 
 | Column Name                | Distinct | NULLs | Definition of contained values:                                           |
 | -------------------------- | -------- | ----- | ------------------------------------------------------------------------- |
+| id                         | 15,134   | 0     | Unique serial id generated as PK with create table query                  |
 | full_visitor_id            | 14223    | 0     | The unique visitor id                                                     |
 | channel_grouping           | 7        | 0     | Default Channel Group per session View for the user                       |
 | time,                      | 9600     | 0     | (hits.) From visit\*start*time to hit registered \_in ms*                 |
@@ -84,79 +85,58 @@ The primary goal of data cleaning is to learn everything we can about the inform
 
 ### TABLE 2: analytics: [4,301,122 rows, 15 columns]
 
-| Column Name            | Distinct | NULLs     | Definition of contained values:                        |
-| ---------------------- | -------- | --------- | ------------------------------------------------------ |
-| visit_number           | 222      | 0         | The session number                                     |
-| visit_id               | 148,642  | 0         | The name of each product item.                         |
-| visit_start_time       | 148,853  | 0         | Timestamp _as POSIX time format_                       |
-| date                   | 93       | 0         | Date of the visit record                               |
-| full_visitor_id        | 120,018  | 0         | The unique visitor id                                  |
-| user_id                | NULL     | all       | This column will be deleted                            |
-| channel_grouping       | 8        | 0         | Default Channel Group per session View for the user    |
-| social_engagement_type | 1        | 0         | This column will be deleted                            |
-| units_sold             | 135      | 95,147    |                                                        |
-| page_views             | 129      | 72        | (totals.) Number of page views from within the session |
-| time_on_site           | 3270     | 477,465   | (totals.) _in seconds_                                 |
-| bounces                | 1        | 3,826,283 |                                                        |
-| revenue                | 5270     | 4,285,767 |                                                        |
-| unit_price             | 1442     | 0         |                                                        |
+| Column Name            | Distinct  | NULLs     | Definition of contained values:                          |
+| ---------------------- | --------- | --------- | -------------------------------------------------------- |
+| id                     | 4,301,122 | 0         | Unique serial id generated as PK with create table query |
+| visit_number           | 222       | 0         | The session number                                       |
+| visit_id               | 148,642   | 0         | The name of each product item.                           |
+| visit_start_time       | 148,853   | 0         | Timestamp _as POSIX time format_                         |
+| date                   | 93        | 0         | Date of the visit record                                 |
+| full_visitor_id        | 120,018   | 0         | The unique visitor id                                    |
+| user_id                | NULL      | all       | This column will be deleted                              |
+| channel_grouping       | 8         | 0         | Default Channel Group per session View for the user      |
+| social_engagement_type | 1         | 0         | This column will be deleted                              |
+| units_sold             | 135       | 95,147    | The store's record of Units sold                         |
+| page_views             | 129       | 72        | (totals.) Number of page views from within the session   |
+| time_on_site           | 3270      | 477,465   | (totals.) _in seconds_                                   |
+| bounces                | 1         | 3,826,283 | (totals.) A bounced session = 1, otherwise is null       |
+| revenue                | 5270      | 4,285,767 | The store's record of revenue                            |
+| unit_price             | 1442      | 0         | the store's record of unit price                         |
 
-### TABLE 3: products: [ rows, 8 columns]
+### TABLE 3: products: [1092 rows, 8 columns]
 
-| Column Name            | Distinct | NULLs     | Definition of contained values:                        |
-| ---------------------- | -------- | --------- | ------------------------------------------------------ |
-| visit_number           | 222      | 0         | The session number                                     |
-| visit_id               | 148,642  | 0         | The name of each product item.                         |
-| visit_start_time       | 148,853  | 0         | Timestamp _as POSIX time format_                       |
-| date                   | 93       | 0         | Date of the visit record                               |
-| full_visitor_id        | 120,018  | 0         | The unique visitor id                                  |
-| user_id                | NULL     | all       | This column will be deleted                            |
-| channel_grouping       | 8        | 0         | Default Channel Group per session View for the user    |
-| social_engagement_type | 1        | 0         | This column will be deleted                            |
-| units_sold             | 135      | 95,147    |                                                        |
-| page_views             | 129      | 72        | (totals.) Number of page views from within the session |
-| time_on_site           | 3270     | 477,465   | (totals.) _in seconds_                                 |
-| bounces                | 1        | 3,826,283 |                                                        |
-| revenue                | 5270     | 4,285,767 |                                                        |
-| unit_price             | 1442     | 0         |                                                        |
+| Column Name          | Distinct | NULLs | Definition of contained values:                              |
+| -------------------- | -------- | ----- | ------------------------------------------------------------ |
+| id                   | 1092     | 0     | Unique serial id generated as PK with create table query     |
+| sku                  | 1092     | 0     | Unique product id. _Auto-generated id above will be dropped_ |
+| name                 | 313      | 0     | Product name and description                                 |
+| ordered_quantity     | 224      | 0     | Ordered quantity                                             |
+| stock_level          | 262      | 0     | Product stock level                                          |
+| restocking_lead_time | 27       | 0     | Restock timing indicator _in days_                           |
+| sentiment_score      | 17       | 1     |                                                              |
+| sentiment_magnitude  | 20       | 1     |                                                              |
 
 ### TABLE 4: sales_by_sku: [ rows, 3 columns]
 
-| Column Name            | Distinct | NULLs     | Definition of contained values:                        |
-| ---------------------- | -------- | --------- | ------------------------------------------------------ |
-| visit_number           | 222      | 0         | The session number                                     |
-| visit_id               | 148,642  | 0         | The name of each product item.                         |
-| visit_start_time       | 148,853  | 0         | Timestamp _as POSIX time format_                       |
-| date                   | 93       | 0         | Date of the visit record                               |
-| full_visitor_id        | 120,018  | 0         | The unique visitor id                                  |
-| user_id                | NULL     | all       | This column will be deleted                            |
-| channel_grouping       | 8        | 0         | Default Channel Group per session View for the user    |
-| social_engagement_type | 1        | 0         | This column will be deleted                            |
-| units_sold             | 135      | 95,147    |                                                        |
-| page_views             | 129      | 72        | (totals.) Number of page views from within the session |
-| time_on_site           | 3270     | 477,465   | (totals.) _in seconds_                                 |
-| bounces                | 1        | 3,826,283 |                                                        |
-| revenue                | 5270     | 4,285,767 |                                                        |
-| unit_price             | 1442     | 0         |                                                        |
+| Column Name   | Distinct | NULLs | Definition of contained values:                          |
+| ------------- | -------- | ----- | -------------------------------------------------------- |
+| id            |          | 0     | Unique serial id generated as PK with create table query |
+| product_sku   |          |       |                                                          |
+| total_ordered |          |       |                                                          |
 
 ### TABLE 5: sales_report: [ rows, 9 columns]
 
-| Column Name            | Distinct | NULLs     | Definition of contained values:                        |
-| ---------------------- | -------- | --------- | ------------------------------------------------------ |
-| visit_number           | 222      | 0         | The session number                                     |
-| visit_id               | 148,642  | 0         | The name of each product item.                         |
-| visit_start_time       | 148,853  | 0         | Timestamp _as POSIX time format_                       |
-| date                   | 93       | 0         | Date of the visit record                               |
-| full_visitor_id        | 120,018  | 0         | The unique visitor id                                  |
-| user_id                | NULL     | all       | This column will be deleted                            |
-| channel_grouping       | 8        | 0         | Default Channel Group per session View for the user    |
-| social_engagement_type | 1        | 0         | This column will be deleted                            |
-| units_sold             | 135      | 95,147    |                                                        |
-| page_views             | 129      | 72        | (totals.) Number of page views from within the session |
-| time_on_site           | 3270     | 477,465   | (totals.) _in seconds_                                 |
-| bounces                | 1        | 3,826,283 |                                                        |
-| revenue                | 5270     | 4,285,767 |                                                        |
-| unit_price             | 1442     | 0         |                                                        |
+| Column Name          | Distinct | NULLs | Definition of contained values:                          |
+| -------------------- | -------- | ----- | -------------------------------------------------------- |
+| id                   |          | 0     | Unique serial id generated as PK with create table query |
+| product_sku          |          |       |                                                          |
+| total_ordered        |          |       |                                                          |
+| name                 |          |       |                                                          |
+| stock_level          |          |       |                                                          |
+| restocking_lead_time |          |       |                                                          |
+| sentiment_score      |          |       |                                                          |
+| sentiment_magnitude  |          |       |                                                          |
+| ratio                |          |       |                                                          |
 
 ## Methods and Procedure: Queries
 
