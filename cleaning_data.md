@@ -116,27 +116,27 @@ The primary goal of data cleaning is to learn everything we can about the inform
 | sentiment_score      | 17       | 1     |                                                              |
 | sentiment_magnitude  | 20       | 1     |                                                              |
 
-### TABLE 4: sales_by_sku: [ rows, 3 columns]
+### TABLE 4: sales_by_sku: [462 rows, 3 columns]
 
-| Column Name   | Distinct | NULLs | Definition of contained values:                          |
-| ------------- | -------- | ----- | -------------------------------------------------------- |
-| id            |          | 0     | Unique serial id generated as PK with create table query |
-| product_sku   |          |       |                                                          |
-| total_ordered |          |       |                                                          |
+| Column Name   | Distinct | NULLs | Definition of contained values:                              |
+| ------------- | -------- | ----- | ------------------------------------------------------------ |
+| id            | 462      | 0     | Unique serial id generated as PK with create table query     |
+| product_sku   | 462      | 0     | Unique product id. _Auto-generated id above will be dropped_ |
+| total_ordered | 60       | 0     | Total quantity of product ordered                            |
 
-### TABLE 5: sales_report: [ rows, 9 columns]
+### TABLE 5: sales_report: [454 rows, 9 columns]
 
-| Column Name          | Distinct | NULLs | Definition of contained values:                          |
-| -------------------- | -------- | ----- | -------------------------------------------------------- |
-| id                   |          | 0     | Unique serial id generated as PK with create table query |
-| product_sku          |          |       |                                                          |
-| total_ordered        |          |       |                                                          |
-| name                 |          |       |                                                          |
-| stock_level          |          |       |                                                          |
-| restocking_lead_time |          |       |                                                          |
-| sentiment_score      |          |       |                                                          |
-| sentiment_magnitude  |          |       |                                                          |
-| ratio                |          |       |                                                          |
+| Column Name          | Distinct | NULLs | Definition of contained values:                                |
+| -------------------- | -------- | ----- | -------------------------------------------------------------- |
+| id                   | 454      | 0     | Unique serial id generated as PK with create table query       |
+| product_sku          | 454      | 0     | Unique product id. _Auto-generated id above might be dropped?_ |
+| total_ordered        | 60       | 0     | Ordered quantity                                               |
+| name                 | 237      | 0     | Product name and description                                   |
+| stock_level          | 219      | 0     | Product stock level                                            |
+| restocking_lead_time | 26       | 0     | Restock timing indicator _in days_                             |
+| sentiment_score      | 16       | 0     |                                                                |
+| sentiment_magnitude  | 20       | 0     |                                                                |
+| ratio                | 245      | 78    |                                                                |
 
 ## Methods and Procedure: Queries
 
