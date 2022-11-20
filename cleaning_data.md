@@ -248,6 +248,8 @@ AND an.visit_id = d.visit_id
 
 ERD for end of Part 1
 
+![]()
+
 ---
 
 ### STEP 2: Cleaning the Issues Found in Orientation.
@@ -275,9 +277,218 @@ ALTER TABLE all_sessions
 SELECT * FROM all_sessions;
 ```
 
-# `WIP`-----------------------------------------------------------------------`WIP`
+---
 
 #### Breaking up all_sessions into smaller relatable tables:
+
+```sql
+SELECT CAST((id +900000 )AS INT) AS id
+	, CAST(id AS INT) AS alls_id
+	, page_title
+	, page_path_level1
+FROM all_sessions
+```
+
+```sql
+-- Create new table for page analytic data:
+CREATE TABLE page_analytics(
+    id INT
+	, alls_id INT
+    , page_title VARCHAR(1000)
+    , page_path_level1 VARCHAR(50)
+    , PRIMARY KEY (id)
+    , FOREIGN KEY (alls_id)
+    REFERENCES all_sessions (id)
+);
+
+COPY page_analytics(
+    id
+	, alls_id
+    , page_title
+    , page_path_level1
+)
+FROM '/Users/Shared/page_analytics.csv'
+DELIMITER ','
+CSV HEADER;
+```
+
+Confirm data safely secured elsewhere:
+
+```sql
+-- Call new table page_analytics
+SELECT *
+FROM page_analytics
+
+-- Remove displaced columns from all_sessions table
+ALTER TABLE all_sessions
+  DROP COLUMN page_title;
+
+ALTER TABLE all_sessions
+  DROP COLUMN page_path_level1;
+```
+
+---
+
+```sql
+-- New table: geo_vistor.  Export .csv
+SELECT CAST((id +800000 )AS INT) AS geo_id
+	, city
+	, country
+	, CAST(id AS INT) AS alls_id
+FROM all_sessions
+
+-- Create new table:
+CREATE TABLE geo_vistor(
+    geo_id INT
+    , city VARCHAR(100)
+    , country VARCHAR(50)
+    , alls_id INT
+    , PRIMARY KEY (geo_id)
+    , FOREIGN KEY (alls_id)
+    REFERENCES all_sessions (id)
+);
+
+COPY geo_visitor(
+  geo_id
+  , city
+  , country
+  , alls_id
+)
+FROM '/Users/Shared/geo_visitor.csv'
+DELIMITER ','
+CSV HEADER;
+```
+
+```sql
+-- Call new table geo_visitor
+SELECT *
+FROM geo_visitor
+
+-- Remove displaced columns from all_sessions table
+Confirm data is secured:
+ALTER TABLE all_sessions
+  DROP COLUMN city;
+
+ALTER TABLE all_sessions
+  DROP COLUMN country;
+```
+
+---
+
+```SQL
+-- New table: page_analytics.  Export .csv
+SELECT
+    CAST((id + 700000)AS INT) AS ecommerce_id
+	, ecommerce_action_type
+	, ecommerce_action_step
+    , ecommerce_action_option
+	, CAST(id AS INT) AS alls_id
+    , CAST((id + 900000)AS INT) AS page_id
+FROM all_sessions;
+
+
+-- Create new table:
+CREATE TABLE ecommerce_hits(
+    ecommerce_id INT
+    , ecommerce_action_type SMALLINT
+    , ecommerce_action_step SMALLINT
+    , ecommerce_action_option VARCHAR(50)
+    , alls_id INT
+    , page_id INT
+    , PRIMARY KEY (ecommerce_id)
+    , FOREIGN KEY (alls_id)
+    REFERENCES all_sessions (id)
+    , FOREIGN KEY (page_id)
+    REFERENCES page_analytics (id)
+);
+
+COPY ecommerce_hits(
+  ecommerce_id
+  , ecommerce_action_type
+  , ecommerce_action_step
+  , ecommerce_action_option
+  , alls_id
+  , page_id
+)
+FROM '/Users/Shared/ecommerce_hits.csv'
+DELIMITER ','
+CSV HEADER;
+
+-- Call new table ecommerce_hits
+SELECT * FROM ecommerce_hits;
+
+-- Drop columns from all_sessions
+ALTER TABLE all_sessions
+  DROP COLUMN ecommerce_action_type;
+
+ALTER TABLE all_sessions
+  DROP COLUMN ecommerce_action_step;
+
+ALTER TABLE all_sessions
+  DROP COLUMN ecommerce_action_option;
+```
+
+---
+
+```SQL
+SELECT
+    CAST((id + 600000)AS INT) AS category_id
+    , product_price
+    , product_sku
+    , v2_product_name
+    , v2_product_category
+    , product_variant
+    , CAST(id AS INT) AS alls_id
+    , CAST((id + 700000)AS INT) AS ecommerce_id
+FROM all_sessions;
+
+
+-- Create new table:
+CREATE TABLE category(
+    category_id INT
+    , product_price BIGINT
+    , product_sku VARCHAR(50)
+    , v2_product_name VARCHAR(100)
+    , v2_product_category VARCHAR(100)
+    , product_variant VARCHAR(50)
+	, alls_id INT
+	, ecommerce_id INT
+    , PRIMARY KEY (category_id)
+    , FOREIGN KEY (alls_id)
+	REFERENCES all_sessions (id)
+	, FOREIGN KEY (ecommerce_id)
+    REFERENCES ecommerce_hits (ecommerce_id)
+);
+
+COPY category(
+  category_id
+  , product_price
+  , product_sku
+  , v2_product_name
+  , v2_product_category
+  , product_variant
+  , alls_id
+  , ecommerce_id
+)
+FROM '/Users/Shared/category.csv'
+DELIMITER ','
+CSV HEADER;
+
+-- Call new table ecommerce_hits
+SELECT * FROM category;
+
+-- Drop columns from all_sessions
+ALTER TABLE all_sessions
+  DROP COLUMN v2_product_name;
+
+ALTER TABLE all_sessions
+  DROP COLUMN v2_product_category;
+
+ALTER TABLE all_sessions
+  DROP COLUMN product_variant;
+```
+
+# `WIP`-----------------------------------------------------------------------`WIP`
 
 #### Group values: Consistency?
 
