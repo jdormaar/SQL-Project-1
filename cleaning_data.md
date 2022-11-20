@@ -144,9 +144,11 @@ The primary goal of data cleaning is to learn everything we can about the inform
 
 ### STEP 1: Getting Oriented with the Data.
 
-Consistent naming conventions were first established with the column and table names for simpler interactions with the data. Tables were titled with snake case, which is the simplest format for PGAdmin as well. An example query of this series on full_visitor_id column for all_sessions below:
+#### Title and Naming consistency:
 
-_ALTER TABLE to RENAME COLUMN HEADING_:
+Consistent naming conventions were established first by changing the column names to match the format of the tables names. Snake case is the simplest format for working with PGAdmin, and so it was chosen when creating the table titles. An example query of how column names were changed is given for the full_visitor_id column (was previously fullVisitorId) for all_sessions below:
+
+_SQL ALTER TABLE - RENAME COLUMN_:
 
 ```sql
 -- Rename column headings for consistency to snake case.
@@ -154,11 +156,18 @@ ALTER TABLE public.all_sessions
 RENAME COLUMN fullVisitorId TO full_visitor_id;
 ```
 
-Table shape was determined with simple select statements
+#### Number of unique/duplicate values:
+
+Table shape was determined with simple select statements for total rows. The resulting values plus the known number of columns title Tables 1-5 in Discussion.
 
 _SQL SELECT_:
 
-Count aggregate statements were used sequentially for an initial broad overview of the qantity, type, and quality of the data in each column. The results of these were populated into Tables 1-5 in Discussion. An example query of this series on full_visitor_id column for all_sessions below:
+```sql
+SELECT COUNT(id)
+FROM all_sessions;
+```
+
+Count() function aggregate statements were used sequentially for an initial broad overview of the quantity, type, and quality of the data in each column. The results of these were populated into Tables 1-5 in Discussion. An example query of this series on full_visitor_id column for all_sessions below:
 
 _SQL DISTINCT and COUNT()_:
 
@@ -173,6 +182,104 @@ ORDER BY 2 DESC;
 SELECT COUNT(*)
 FROM all_sessions
 WHERE full_visitor_id IS NULL;
+```
+
+#### Create (Temp?) new table:
+
+```sql
+
+```
+
+#### Query for full table row duplications:
+
+Finding full row duplications in a table:
+_SQL WITH_
+
+```sql
+-- Row duplications in all_sessions:
+WITH dup_rows AS (
+	SELECT full_visitor_id
+		, visit_id
+-- 		, product_sku
+		, COUNT(*) AS num_rows
+	FROM all_sessions
+	GROUP BY 1,2
+	-- ,3
+	HAVING COUNT(*) > 1)
+
+SELECT *
+FROM all_sessions al
+JOIN dup_rows d
+ON al.full_visitor_id = d.full_visitor_id
+AND al.visit_id = d.visit_id
+-- AND al.product_sku = d.product_sku
+
+-- Returns 459 rows.
+-- Uncommenting the 2 lines in the function Returns 0 row duplications
+```
+
+NOTE: `all_sessions` appeared to have 459 counted duplications when queried on the paired sets of `full_visitor_id`, `visit_id`.
+
+Adding the third `product_sku` value to the matching sets however returned no duplications.
+
+It is most likely this implies that there are 459 instances of user generated product relevant data, involving > 1 product per visit. Therefore the contents of this table should further broken down into more smaller relatable tables.
+
+```sql
+-- Row duplications in analytics
+WITH dup_rows AS (
+	SELECT visit_id
+		, full_visitor_id
+		, COUNT(*) AS num_rows
+	FROM analytics an
+	GROUP BY 1,2
+	HAVING COUNT(*) > 1)
+
+SELECT *
+FROM analytics an
+JOIN dup_rows d
+ON an.full_visitor_id = d.full_visitor_id
+AND an.visit_id = d.visit_id
+-- Current parameters appear to show 4,298,949 of all 4,301,122 rows are duplicated.
+
+-- Further inquiry required.
+```
+
+### STEP 2: Cleaning the Issues Found in Orientation.
+
+#### Group values: Consistency?
+
+_SQL LIKE_
+
+```sql
+-- find values by string values to find typos etc
+-- This ex: Find all facilities whose name BEGINS with 'Tennis'
+SELECT * FROM cd.facilities
+WHERE UPPER(name) LIKE 'TENNIS%'
+-- This ex: Find all facilities whose name CONTAINS  'Tennis'
+SELECT * FROM cd.facilities
+WHERE UPPER(name) LIKE '%TENNIS%'
+-- Strings can be searched using the regex  ~ operator too. this ex looks for '()'
+SELECT memid, telephone FROM cd.members
+WHERE telephone ~ '[()]';
+
+```
+
+_SQL LPAD_
+
+```sql
+-- This example pads member zipcodes with zeros
+SELECT LPAD(CAST(zipcode AS CHAR(5)),5,'0') zip
+FROM cd.members
+ORDER BY zip;
+```
+
+_SQL TRANSLATE_
+
+```sql
+-- This ex takes the '-() ' symbols out of the phonenumbers list and replaces them with the empty string (TRANSLATE(input string, CHARs to remove, new chars))
+SELECT memid, TRANSLATE(telephone, '-() ', '') AS telephone
+FROM cd.members
+ORDER BY memid;
 ```
 
 #### Useful Merges?:
@@ -223,175 +330,15 @@ ORDER BY 1, 2;
 
 ```
 
-#### Create (Temp?) new table:
-
 ```sql
 
 ```
-
-#### Create a table to query using WITH:
-
-_SQL WITH_
-
-```sql
--- This ex is of a SQL query which finds: total # of classes taken, for all students (past and present) who've taken >= 1 class.
--- The result set has the student ID, name, and the # of classes taken.
-
--- The temp table
-WITH class_count AS (
-SELECT student_id, COUNT(*) AS num_of_class
-FROM class_history
-GROUP BY student_id
-)
--- Subsequent query
-SELECT
-COALESCE(c.student_id, s.student_id) AS student_id,
-s.student_name,
-COALESCE(c.num_of_class, 0) AS num_of_class
-FROM class_count c
-_____ student s ON c.student_id = s.student_id
-```
-
-### STEP 2: Cleaning the Issues Found in Orientation.
-
-Get to know the table.
 
 #### Renaming a table:
 
 ```sql
 
 ```
-
-#### Determine the size of the table:
-
-```sql
-
-```
-
-#### Check for column duplications:
-
-Finding full row duplications in a table:
-
-```sql
--- Row duplications in all_sessions:
-WITH dup_rows AS (
-	SELECT fullvisitorid
-		, channelgrouping
-		, time
-		, country
-		, city
-		, visitid
--- 		, productsku
-		, COUNT(*) AS num_rows
-	FROM all_sessions
-	GROUP BY 1,2,3,4,5,6
-	HAVING COUNT(*) > 1)
-
-SELECT *
-FROM all_sessions al
-JOIN dup_rows d
-ON al.fullvisitorid = d.fullvisitorid
-AND al.time = d.time
--- AND al.productsku = d.productsku
-
-/* NOTE: all_sessions appeared to have 453 counted duplications
-within all columns except productsku, and none once included.
- Which implies 453 instances of a user purchasing > 1 product */
-```
-
-```sql
--- Row duplications in analytics
-WITH dup_rows AS (
-	SELECT visitnumber
-		, visitid
-		, visitstarttime
-		, date
-		, fullvisitorid
-		, channelgrouping
-		, unit_price
-		, COUNT(*) AS num_rows
-	FROM analytics an
-	GROUP BY 1,2,3,4,5,6,7
-	HAVING COUNT(*) > 1)
-
-SELECT *
-FROM analytics an
-JOIN dup_rows d
-ON an.visitid = d.visitid
-AND an.visitstarttime = d.visitstarttime
-AND an.unit_price = d.unit_price
--- Current parameters appear to show 3,492,284 duplicate rows.
-
--- Further inquiry required.
-```
-
-#### Check for row duplications:
-
-```sql
-
-```
-
-#### Renaming a column:
-
-```sql
-
-```
-
-#### Sort column values:
-
-```sql
-
-```
-
-#### Count column values:
-
-```sql
-
-```
-
-#### Group values: Consistency?
-
-_SQL LIKE_
-
-```sql
--- find values by string values to find typos etc
--- This ex: Find all facilities whose name BEGINS with 'Tennis'
-SELECT * FROM cd.facilities
-WHERE UPPER(name) LIKE 'TENNIS%'
--- This ex: Find all facilities whose name CONTAINS  'Tennis'
-SELECT * FROM cd.facilities
-WHERE UPPER(name) LIKE '%TENNIS%'
--- Strings can be searched using the regex  ~ operator too. this ex looks for '()'
-SELECT memid, telephone FROM cd.members
-WHERE telephone ~ '[()]';
-
-```
-
-_SQL LPAD_
-
-```sql
--- This example pads member zipcodes with zeros
-SELECT LPAD(CAST(zipcode AS CHAR(5)),5,'0') zip
-FROM cd.members
-ORDER BY zip;
-```
-
-_SQL TRANSLATE_
-
-```sql
--- This ex takes the '-() ' symbols out of the phonenumbers list and replaces them with the empty string (TRANSLATE(input string, CHARs to remove, new chars))
-SELECT memid, TRANSLATE(telephone, '-() ', '') AS telephone
-FROM cd.members
-ORDER BY memid;
-```
-
-#### Number of unique/duplicate values:
-
-```sql
-
-```
-
-if there are, what do you know enough about the data to decide if they are appropriate or not yet?
 
 #### Statistical summary of the categorical values:
 
