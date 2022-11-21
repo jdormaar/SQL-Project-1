@@ -488,6 +488,99 @@ ALTER TABLE all_sessions
   DROP COLUMN product_variant;
 ```
 
+### RESULTING LIST OF RELATABLE TABLES:
+
+### TABLE 6: all_sessions: [15,134 rows, 7 original columns]
+
+| Column Name      | Distinct | NULLs | Definition of contained values:                          |
+| ---------------- | -------- | ----- | -------------------------------------------------------- |
+| id               | 15,134   | 0     | Unique serial id generated as PK with create table query |
+| full_visitor_id  | 14223    | 0     | The unique visitor id                                    |
+| channel_grouping | 7        | 0     | Default Channel Group per session View for the user      |
+|                  |          |       | Values near: 100:'close' 1:'far' 0:'not calculated'      |
+| date,            | 366      | 0     | Date of session record                                   |
+| visit_id,        | 14556    | 0     | Session id unique only to the user                       |
+
+### TABLE 7: product_hits: [15,134 rows, 4 original columns]
+
+| Column Name       | Distinct | NULLs | Definition of contained values:                     |
+| ----------------- | -------- | ----- | --------------------------------------------------- |
+| product_quantity, | 8        | 15081 | (hits.prod.) Purchased product quantity             |
+| product_price,    | 141      | 0     | (hits.prod.) Product price **multiplied by 10^6**   |
+| product_revenue,  | 4        | 15130 | (hits.prod.) Product revenue **multiplied by 10^6** |
+| product_sku,      | 536      | 0     | (hits.prod.) ProductSKU                             |
+
+### TABLE 8: category: [15,134 rows, 5 original columns]
+
+| Column Name          | Distinct | NULLs | Definition of contained values: |
+| -------------------- | -------- | ----- | ------------------------------- |
+| product_sku,         | 536      | 0     | (hits.prod.) ProductSKU         |
+| v2_product_name,     | 471      | 0     | (hits.prod.) Product Name       |
+| v2_product_category, | 74       | 0     | (hits.prod.) Product Category   |
+| product_variant,     | 11       | 0     | (hits.prod.) Product Variant    |
+
+### TABLE 9: ecommerce_hits: [15,134 rows, 3 original columns]
+
+| Column Name             | Distinct | NULLs | Definition of contained values:                    |
+| ----------------------- | -------- | ----- | -------------------------------------------------- |
+| ecommerce_action_type,  | 7        | 0     | (hits.) _see ecommerce_action_type list below:_    |
+| ecommerce_action_step,  | 3        | 0     | (hits.) Indicates step at checkout specific to hit |
+| ecommerce_action_option | 3        | 15103 | (hits.) Option selected at checkout (ex fedex)     |
+
+| ecommerce_action_type |
+| --------------------- |
+
+- 0 = Unknown
+
+1.  = Click through of product lists
+1.  = Product detail views
+1.  = Add product(s) to cart
+1.  = Remove product(s) from cart
+1.  = Check out
+1.  = Completed purchase
+1.  = Refund of purchase
+1.  = Checkout options
+
+### TABLE 10: transaction_hits: [15,134 rows, 4 original columns]
+
+| Column Name                | Distinct | NULLs | Definition of contained values:                              |
+| -------------------------- | -------- | ----- | ------------------------------------------------------------ |
+| currency_code,             | 1        | 272   | (hits.tr.) and (hits.item.) Currency code for transaction    |
+| transaction_revenue,       | 4        | 15125 | (hits.tr.) Transaction revenue **multiplied by 10^6**        |
+| total_transaction_revenue, | 72       | 15053 | (totals.) Total transaction revenue _**multiplied by 10^6**_ |
+| transaction_id,            | 9        | 15125 | (hits.tr.) Transaction id of the ecommerce transaction       |
+
+### TABLE 11: totals: [15,134 rows, 5 original columns]
+
+| Column Name                | Distinct | NULLs | Definition of contained values:                                |
+| -------------------------- | -------- | ----- | -------------------------------------------------------------- |
+| total_transaction_revenue, | 72       | 15053 | (totals.) Total transaction revenue _**multiplied by 10^6**_   |
+| transactions,              | 1        | 15053 | (totals.) Number of ecommerce transactions from session record |
+| time_on_site,              | 1267     | 3300  | (totals.) Time of session _**in seconds**_                     |
+| page_views,                | 29       | 0     | (totals.) Number of page views from within the session         |
+| session_quality_dim,       | 45       | 13906 | (totals.) Quality estimate if 'close' or 'far' to transaction  |
+
+### TABLE 12: page_analytics: [15,134 rows, 2 original columns]
+
+| Column Name       | Distinct | NULLs | Definition of contained values:                                        |
+| ----------------- | -------- | ----- | ---------------------------------------------------------------------- |
+| page_title,       | 269      | 1     | (hits.page.)Title of Page                                              |
+| page_path_level1, | 11       | 0     | (hits.page.) All the page paths rolled into the 1st hierarchical level |
+
+### TABLE 13: geo_visitor: [15,134 rows, 2 original columns]
+
+| Column Name | Distinct | NULLs | Definition of contained values:                       |
+| ----------- | -------- | ----- | ----------------------------------------------------- |
+| city,       | 266      | 0     | (geoNetwork.) Visitor's city by IP or Geographical ID |
+| country,    | 136      | 0     | (geoNetwork.) Visitor's country by IP                 |
+
+### TABLE 14: hits: [15,134 rows, 2 original columns]
+
+| Column Name | Distinct | NULLs | Definition of contained values:                                           |
+| ----------- | -------- | ----- | ------------------------------------------------------------------------- |
+| type,       | 2        | 0     | (hits.) one of PAGE, TRANSACTION, ITEM, EVENT, SOCIAL, APPVIEW, EXCEPTION |
+| time,       | 9600     | 0     | (hits.) From visit\*start*time to hit registered \_in ms*                 |
+
 #### DATA TYPE CONVERSIONS: transaction_hits TABLE
 
 Saving query results to csv formats null values as string 'NULL' which were cleaned by the following:
@@ -569,6 +662,18 @@ FROM transaction_hits
 WHERE currency_code IS NULL
 -- Returns 272 null value count again.
 ```
+
+#### DATA TYPE CONVERSIONS: product_hits TABLE
+
+As per the Tables
+
+##### Column product_quantity:
+
+##### Column product_price:
+
+##### Column product_revenue:
+
+##### Column product_sku:
 
 # `WIP`-----------------------------------------------------------------------`WIP`
 
@@ -713,78 +818,3 @@ _Abreviations?_
 1. https://pgexercises.com/questions/string/concat.html
 1. https://www.stitchdata.com/resources/data-transformation/
 1. https://support.google.com/analytics/answer/3437719?hl=en
-
-### TABLE 1: all_sessions: [15,134 rows, 33 columns]
-
-| Column Name      | Distinct | NULLs | Definition of contained values:                          |
-| ---------------- | -------- | ----- | -------------------------------------------------------- |
-| id               | 15,134   | 0     | Unique serial id generated as PK with create table query |
-| full_visitor_id  | 14223    | 0     | The unique visitor id                                    |
-| channel_grouping | 7        | 0     | Default Channel Group per session View for the user      |
-|                  |          |       | Values near: 100:'close' 1:'far' 0:'not calculated'      |
-| date,            | 366      | 0     | Date of session record                                   |
-| visit_id,        | 14556    | 0     | Session id unique only to the user                       |
-
-| Column Name       | Distinct | NULLs | Definition of contained values:                     |
-| ----------------- | -------- | ----- | --------------------------------------------------- |
-| product_quantity, | 8        | 15081 | (hits.prod.) Purchased product quantity             |
-| product_price,    | 141      | 0     | (hits.prod.) Product price **multiplied by 10^6**   |
-| product_revenue,  | 4        | 15130 | (hits.prod.) Product revenue **multiplied by 10^6** |
-| product_sku,      | 536      | 0     | (hits.prod.) ProductSKU                             |
-
-| Column Name          | Distinct | NULLs | Definition of contained values: |
-| -------------------- | -------- | ----- | ------------------------------- |
-| product_sku,         | 536      | 0     | (hits.prod.) ProductSKU         |
-| v2_product_name,     | 471      | 0     | (hits.prod.) Product Name       |
-| v2_product_category, | 74       | 0     | (hits.prod.) Product Category   |
-| product_variant,     | 11       | 0     | (hits.prod.) Product Variant    |
-
-| Column Name | Distinct | NULLs | Definition of contained values:                                           |
-| ----------- | -------- | ----- | ------------------------------------------------------------------------- |
-| type,       | 2        | 0     | (hits.) one of PAGE, TRANSACTION, ITEM, EVENT, SOCIAL, APPVIEW, EXCEPTION |
-| time,       | 9600     | 0     | (hits.) From visit\*start*time to hit registered \_in ms*                 |
-
-| Column Name             | Distinct | NULLs | Definition of contained values:                    |
-| ----------------------- | -------- | ----- | -------------------------------------------------- |
-| ecommerce_action_type,  | 7        | 0     | (hits.) _see ecommerce_action_type list below:_    |
-| ecommerce_action_step,  | 3        | 0     | (hits.) Indicates step at checkout specific to hit |
-| ecommerce_action_option | 3        | 15103 | (hits.) Option selected at checkout (ex fedex)     |
-
-| Column Name                | Distinct | NULLs | Definition of contained values:                              |
-| -------------------------- | -------- | ----- | ------------------------------------------------------------ |
-| currency_code,             | 1        | 272   | (hits.tr.) and (hits.item.) Currency code for transaction    |
-| transaction_revenue,       | 4        | 15125 | (hits.tr.) Transaction revenue **multiplied by 10^6**        |
-| total_transaction_revenue, | 72       | 15053 | (totals.) Total transaction revenue _**multiplied by 10^6**_ |
-| transaction_id,            | 9        | 15125 | (hits.tr.) Transaction id of the ecommerce transaction       |
-
-| Column Name                | Distinct | NULLs | Definition of contained values:                                |
-| -------------------------- | -------- | ----- | -------------------------------------------------------------- |
-| total_transaction_revenue, | 72       | 15053 | (totals.) Total transaction revenue _**multiplied by 10^6**_   |
-| transactions,              | 1        | 15053 | (totals.) Number of ecommerce transactions from session record |
-| time_on_site,              | 1267     | 3300  | (totals.) Time of session _**in seconds**_                     |
-| page_views,                | 29       | 0     | (totals.) Number of page views from within the session         |
-| session_quality_dim,       | 45       | 13906 | (totals.) Quality estimate if 'close' or 'far' to transaction  |
-
-| Column Name       | Distinct | NULLs | Definition of contained values:                                        |
-| ----------------- | -------- | ----- | ---------------------------------------------------------------------- |
-| page_title,       | 269      | 1     | (hits.page.)Title of Page                                              |
-| page_path_level1, | 11       | 0     | (hits.page.) All the page paths rolled into the 1st hierarchical level |
-
-| Column Name | Distinct | NULLs | Definition of contained values:                       |
-| ----------- | -------- | ----- | ----------------------------------------------------- |
-| city,       | 266      | 0     | (geoNetwork.) Visitor's city by IP or Geographical ID |
-| country,    | 136      | 0     | (geoNetwork.) Visitor's country by IP                 |
-
-| ecommerce_action_type |
-| --------------------- |
-
-- 0 = Unknown
-
-1.  = Click through of product lists
-1.  = Product detail views
-1.  = Add product(s) to cart
-1.  = Remove product(s) from cart
-1.  = Check out
-1.  = Completed purchase
-1.  = Refund of purchase
-1.  = Checkout options
