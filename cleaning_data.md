@@ -488,6 +488,88 @@ ALTER TABLE all_sessions
   DROP COLUMN product_variant;
 ```
 
+#### DATA TYPE CONVERSIONS: transaction_hits TABLE
+
+Saving query results to csv formats null values as string 'NULL' which were cleaned by the following:
+
+##### Column transaction_revenue:
+
+_SQL UPDATE - SET_
+
+_SQL ALTER TABLE - COLUMN_
+
+```SQL
+-- Remove string format 'NULL' values:
+UPDATE transaction_hits
+SET transaction_revenue = 0
+WHERE transaction_revenue LIKE upper('%NULL%')
+
+-- Cast column type to integer again:
+ALTER TABLE transaction_hits
+ALTER COLUMN transaction_revenue TYPE NUMERIC
+USING transaction_revenue::numeric;
+```
+
+Since the BigQuery Export schema produces financial values with a 10^6 multiplier, all financial values were normalized by dividing this value back out again.
+
+```SQL
+UPDATE transaction_hits
+SET transaction_revenue = transaction_revenue * 0.000001;
+
+-- Confirm results:
+SELECT *
+FROM transaction_hits
+```
+
+##### Column transaction_id:
+
+```sql
+UPDATE transaction_hits
+SET transaction_id = null
+WHERE transaction_id LIKE upper('%NULL%')
+
+-- Confirm results:
+SELECT *
+FROM transaction_hits
+```
+
+##### Column total_transaction_revenue:
+
+```sql
+-- Fix string formated 'NULL' values:
+UPDATE transaction_hits
+SET total_transaction_revenue = null
+WHERE total_transaction_revenue LIKE upper('%NULL%')
+
+-- Cast column type to integer again:
+ALTER TABLE transaction_hits
+ALTER COLUMN total_transaction_revenue TYPE NUMERIC
+USING total_transaction_revenue::numeric;
+
+-- Adjust for the Data Results financial multiplier of 10^6:
+UPDATE transaction_hits
+SET total_transaction_revenue = total_transaction_revenue * 0.000001
+
+-- Confirm results:
+SELECT *
+FROM transaction_hits
+```
+
+##### Column currency_code:
+
+```sql
+-- Fix string formated 'NULL' values:
+UPDATE transaction_hits
+SET currency_code = null
+WHERE currency_code LIKE upper('%NULL%')
+
+-- Confirm results:
+SELECT COUNT(*)
+FROM transaction_hits
+WHERE currency_code IS NULL
+-- Returns 272 null value count again.
+```
+
 # `WIP`-----------------------------------------------------------------------`WIP`
 
 #### Group values: Consistency?
