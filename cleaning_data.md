@@ -241,6 +241,31 @@ ON an.full_visitor_id = d.full_visitor_id
 AND an.visit_id = d.visit_id
 -- Current parameters appear to show 4,298,949 of all 4,301,122 rows are duplicated.
 
+WITH dup_rows AS (
+	SELECT
+		visit_number,
+		visit_id,
+		visit_start_time,
+		date,
+		full_visitor_id,
+		user_id,
+		channel_grouping,
+		social_engagement_type,
+		units_sold,
+		page_views,
+		time_on_site,
+		bounces,
+		revenue,
+		unit_price,
+	COUNT(*) AS num_rows -- Count # rows with ALL = columns:
+	FROM analytics an
+	GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14
+	HAVING COUNT(*) > 1
+)
+	AS num_unique
+FROM analytics an
+-- Returns 870577 values (~20%)
+
 -- Further inquiry required.
 ```
 

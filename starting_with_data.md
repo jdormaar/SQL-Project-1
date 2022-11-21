@@ -190,6 +190,41 @@ Answer:
 
 SQL Queries:
 
+#### Query for full table row duplications:
+
+Finding full row duplications in a table:
+_SQL WITH_
+
+````sql
+-- Row duplications in all_sessions:
+WITH dup_rows AS (
+	SELECT full_visitor_id
+		, visit_id
+-- 		, product_sku
+		, COUNT(*) AS num_rows
+	FROM all_sessions
+	GROUP BY 1,2
+	-- ,3
+	HAVING COUNT(*) > 1)
+
+SELECT *
+FROM all_sessions al
+JOIN dup_rows d
+ON al.full_visitor_id = d.full_visitor_id
+AND al.visit_id = d.visit_id
+-- AND al.product_sku = d.product_sku
+
+-- Returns 459 rows.
+-- Uncommenting the lines in the function Returns 0 row duplications
+
+
+
+
+
+# Question 4: City representation per country:
+
+SQL Queries:
+
 ```sql
 -- Count then number of cities within givin country
 SELECT country, COUNT(city) AS cities
@@ -197,7 +232,7 @@ FROM geo_visitor
 WHERE city IS NOT NULL
 GROUP BY 1
 ORDER BY 2 DESC, 1;
-```
+````
 
 Answer:
 Ordered to display the countries with the highest number of cities for originating purchase orders.
