@@ -67,7 +67,7 @@ Answer:
 - the query result answers are included in the tables below in question 2.
 - The more qualitative observations however are more broad, and can be found throughout the cleaning_data.md document
 
-# Question 2: For each column within the database, determine the number of unique values:
+# Question 2: Type and distribution of unique values:
 
 ## Determining the number of unique values for each column per table:
 
@@ -186,7 +186,7 @@ Answer:
 | sentiment_magnitude  | 20       | 0     |                             |
 | ratio                | 245      | 78    |                             |
 
-# Question 3: How many cities purchased orders within each country
+# Question 3: City representation per country:
 
 SQL Queries:
 
