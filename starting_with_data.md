@@ -94,14 +94,117 @@ SELECT DISTINCT full_visitor_id, COUNT(full_visitor_id)
 FROM all_sessions
 GROUP BY 1
 ORDER BY 2 DESC;
-
--- Evaluate NULL content:
-SELECT COUNT(*)
-FROM all_sessions
-WHERE full_visitor_id IS NULL;
 ```
 
 Answer:
+
+### TABLE 1: all_sessions: [15,134 rows, 33 columns]
+
+| Column Name                | Distinct | NULLs | Definition of contained values:                                           |
+| -------------------------- | -------- | ----- | ------------------------------------------------------------------------- |
+| id                         | 15,134   | 0     | Unique serial id generated as PK with create table query                  |
+| full_visitor_id            | 14223    | 0     | The unique visitor id                                                     |
+| channel_grouping           | 7        | 0     | Default Channel Group per session View for the user                       |
+| time,                      | 9600     | 0     | (hits.) From visit\*start*time to hit registered \_in ms*                 |
+| country,                   | 136      | 0     | (geoNetwork.) Visitor's country by IP                                     |
+| city,                      | 266      | 0     | (geoNetwork.) Visitor's city by IP or Geographical ID                     |
+| total_transaction_revenue, | 72       | 15053 | (totals.) Total transaction revenue _multiplied by 10^6_                  |
+| transactions,              | 1        | 15053 | (totals.) Number of ecommerce transactions from session record            |
+| time_on_site,              | 1267     | 3300  | (totals.) Time of session _in seconds_                                    |
+| page_views,                | 29       | 0     | (totals.) Number of page views from within the session                    |
+| session_quality_dim,       | 45       | 13906 | (totals.) Quality estimate if 'close' or 'far' to transaction             |
+|                            |          |       | Values near: 100:'close' 1:'far' 0:'not calculated'                       |
+| date,                      | 366      | 0     | Date of session record                                                    |
+| visit_id,                  | 14556    | 0     | Session id unique only to the user                                        |
+| type,                      | 2        | 0     | (hits.) one of PAGE, TRANSACTION, ITEM, EVENT, SOCIAL, APPVIEW, EXCEPTION |
+| product_refund_amount,     | NULL     | all   | _This column will be deleted_                                             |
+| product_quantity,          | 8        | 15081 | (hits.prod.) Purchased product quantity                                   |
+| product_price,             | 141      | 0     | (hits.prod.) Product price _multiplied by 10^6_                           |
+| product_revenue,           | 4        | 15130 | (hits.prod.) Product revenue _multiplied by 10^6_                         |
+| product_sku,               | 536      | 0     | (hits.prod.) ProductSKU                                                   |
+| v2_product_name,           | 471      | 0     | (hits.prod.) Product Name                                                 |
+| v2_product_category,       | 74       | 0     | (hits.prod.) Product Category                                             |
+| product_variant,           | 11       | 0     | (hits.prod.) Product Variant                                              |
+| currency_code,             | 1        | 272   | (hits.tr.) and (hits.item.) Currency code for transaction                 |
+| item_quantity,             | NULL     | all   | _This column will be deleted_                                             |
+| item_revenue               | NULL     | all   | _This column will be deleted_                                             |
+| transaction_revenue,       | 4        | 15125 | (hits.tr.) Transaction revenue _multiplied by 10^6_                       |
+| transaction_id,            | 9        | 15125 | (hits.tr.) Transaction id of the ecommerce transaction                    |
+| page_title,                | 269      | 1     | (hits.page.)Title of Page                                                 |
+| search_keyword,            | NULL     | all   | _Would have contained search word keywords - This column will be deleted_ |
+| page_path_level1,          | 11       | 0     | (hits.page.) All the page paths rolled into the 1st hierarchical level    |
+| ecommerce_action_type,     | 7        | 0     | (hits.) _see ecommerce_action_type list below:_                           |
+| ecommerce_action_step,     | 3        | 0     | (hits.) Indicates step at checkout specific to hit                        |
+| ecommerce_action_option    | 3        | 15103 | (hits.) Option selected at checkout (ex fedex)                            |
+
+| ecommerce_action_type |
+| --------------------- |
+
+- 0 = Unknown
+
+1.  = Click through of product lists
+1.  = Product detail views
+1.  = Add product(s) to cart
+1.  = Remove product(s) from cart
+1.  = Check out
+1.  = Completed purchase
+1.  = Refund of purchase
+1.  = Checkout options
+
+### TABLE 2: analytics: [4,301,122 rows, 15 columns]
+
+| Column Name            | Distinct  | NULLs     | Definition of contained values:                          |
+| ---------------------- | --------- | --------- | -------------------------------------------------------- |
+| id                     | 4,301,122 | 0         | Unique serial id generated as PK with create table query |
+| visit_number           | 222       | 0         | The session number                                       |
+| visit_id               | 148,642   | 0         | The name of each product item.                           |
+| visit_start_time       | 148,853   | 0         | Timestamp _as POSIX time format_                         |
+| date                   | 93        | 0         | Date of the visit record                                 |
+| full_visitor_id        | 120,018   | 0         | The unique visitor id                                    |
+| user_id                | NULL      | all       | This column will be deleted                              |
+| channel_grouping       | 8         | 0         | Default Channel Group per session View for the user      |
+| social_engagement_type | 1         | 0         | This column will be deleted                              |
+| units_sold             | 135       | 95,147    | The store's record of Units sold                         |
+| page_views             | 129       | 72        | (totals.) Number of page views from within the session   |
+| time_on_site           | 3270      | 477,465   | (totals.) _in seconds_                                   |
+| bounces                | 1         | 3,826,283 | (totals.) A bounced session = 1, otherwise is null       |
+| revenue                | 5270      | 4,285,767 | The store's record of revenue                            |
+| unit_price             | 1442      | 0         | the store's record of unit price                         |
+
+### TABLE 3: products: [1092 rows, 8 columns]
+
+| Column Name          | Distinct | NULLs | Definition of contained values:                              |
+| -------------------- | -------- | ----- | ------------------------------------------------------------ |
+| id                   | 1092     | 0     | Unique serial id generated as PK with create table query     |
+| sku                  | 1092     | 0     | Unique product id. _Auto-generated id above will be dropped_ |
+| name                 | 313      | 0     | Product name and description                                 |
+| ordered_quantity     | 224      | 0     | Ordered quantity                                             |
+| stock_level          | 262      | 0     | Product stock level                                          |
+| restocking_lead_time | 27       | 0     | Restock timing indicator _in days_                           |
+| sentiment_score      | 17       | 1     |                                                              |
+| sentiment_magnitude  | 20       | 1     |                                                              |
+
+### TABLE 4: sales_by_sku: [462 rows, 3 columns]
+
+| Column Name   | Distinct | NULLs | Definition of contained values:                              |
+| ------------- | -------- | ----- | ------------------------------------------------------------ |
+| id            | 462      | 0     | Unique serial id generated as PK with create table query     |
+| product_sku   | 462      | 0     | Unique product id. _Auto-generated id above will be dropped_ |
+| total_ordered | 60       | 0     | Total quantity of product ordered                            |
+
+### TABLE 5: sales_report: [454 rows, 9 columns]
+
+| Column Name          | Distinct | NULLs | Definition of contained values:                                |
+| -------------------- | -------- | ----- | -------------------------------------------------------------- |
+| id                   | 454      | 0     | Unique serial id generated as PK with create table query       |
+| product_sku          | 454      | 0     | Unique product id. _Auto-generated id above might be dropped?_ |
+| total_ordered        | 60       | 0     | Ordered quantity                                               |
+| name                 | 237      | 0     | Product name and description                                   |
+| stock_level          | 219      | 0     | Product stock level                                            |
+| restocking_lead_time | 26       | 0     | Restock timing indicator _in days_                             |
+| sentiment_score      | 16       | 0     |                                                                |
+| sentiment_magnitude  | 20       | 0     |                                                                |
+| ratio                | 245      | 78    |                                                                |
 
 # Question 3: How many cities purchased orders within each country
 
@@ -185,15 +288,3 @@ Ordered to display the countries with the highest number of cities for originati
 | "Qatar"                | 1      |
 | "Serbia"               | 1      |
 | "Slovakia"             | 1      |
-
-Question 4:
-
-SQL Queries:
-
-Answer:
-
-Question 5:
-
-SQL Queries:
-
-Answer:
