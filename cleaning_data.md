@@ -737,6 +737,88 @@ ALTER TABLE category
 ALTER COLUMN product_price TYPE NUMERIC
 USING product_price::numeric;
 
+```SQL
+CREATE TABLE IF NOT EXISTS public.products_category
+(
+category_id INT NOT NULL
+, product_price DECIMAL(15,2)
+, product_sku VARCHAR(50) COLLATE pg_catalog."default"
+, v2_product_name VARCHAR(100) COLLATE pg_catalog."default"
+, v2_product_category VARCHAR(100) COLLATE pg_catalog."default"
+, main_category VARCHAR(50)
+, sub_cat_1 VARCHAR(50)
+, sub_cat_2 VARCHAR(50)
+, sub_cat_3 VARCHAR(50)
+, product_variant VARCHAR(50) COLLATE pg_catalog."default"
+, alls_id INT
+, ecommerce_id INT
+, CONSTRAINT category_pkey PRIMARY KEY (category_id)
+, CONSTRAINT category_alls_id_fkey FOREIGN KEY (alls_id)
+REFERENCES public.all_sessions (id) MATCH SIMPLE
+ON UPDATE NO ACTION
+ON DELETE NO ACTION,
+CONSTRAINT category_ecommerce_id_fkey FOREIGN KEY (ecommerce_id)
+REFERENCES public.ecommerce_hits (ecommerce_id) MATCH SIMPLE
+ON UPDATE NO ACTION
+ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.products_category
+OWNER to postgres;
+-- Create a Temporary table to story new values in new column order:
+WITH split_cat AS (
+	SELECT
+		category_id
+		, product_price
+		, product_sku
+		, v2_product_name
+		, v2_product_category
+		, SPLIT_PART (v2_product_category,'/',1) main_category
+		, SPLIT_PART (v2_product_category,'/',2) sub_cat_1
+		, SPLIT_PART (v2_product_category,'/',3) sub_cat_2
+		, SPLIT_PART (v2_product_category,'/',4) sub_cat_3
+		, product_variant
+		, alls_id
+		, ecommerce_id
+	FROM category
+)
+-- Insert statement for the new table:
+INSERT INTO products_category(
+	category_id
+	, product_price
+	, product_sku
+	, v2_product_name
+	, v2_product_category
+	, main_category
+	, sub_cat_1
+	, sub_cat_2
+	, sub_cat_3
+	, product_variant
+	, alls_id
+	, ecommerce_id
+)
+-- From the Temp table
+SELECT
+	category_id
+	, product_price
+	, product_sku
+	, v2_product_name
+	, v2_product_category
+	, main_category
+	, sub_cat_1
+	, sub_cat_2
+	, sub_cat_3
+	, product_variant
+	, alls_id
+	, ecommerce_id
+FROM split_cat
+
+-- Confirm new table values:
+SELECT * FROM public.products_category
+```
+
 #### DATA TRANSFORMATIONS: geo_visitor TABLE:
 
 ```sql
