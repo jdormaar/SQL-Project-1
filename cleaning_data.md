@@ -490,7 +490,7 @@ ALTER TABLE all_sessions
 
 ### RESULTING LIST OF RELATABLE TABLES:
 
-### TABLE 6: all_sessions: [15,134 rows, 7 original columns]
+#### TABLE 6: all_sessions: [15,134 rows, 7 original columns]
 
 | Column Name      | Distinct | NULLs | Definition of contained values:                          |
 | ---------------- | -------- | ----- | -------------------------------------------------------- |
@@ -501,7 +501,7 @@ ALTER TABLE all_sessions
 | date,            | 366      | 0     | Date of session record                                   |
 | visit_id,        | 14556    | 0     | Session id unique only to the user                       |
 
-### TABLE 7: product_hits: [15,134 rows, 4 original columns]
+#### TABLE 7: product_hits: [15,134 rows, 4 original columns]
 
 | Column Name       | Distinct | NULLs | Definition of contained values:                     |
 | ----------------- | -------- | ----- | --------------------------------------------------- |
@@ -510,7 +510,7 @@ ALTER TABLE all_sessions
 | product_revenue,  | 4        | 15130 | (hits.prod.) Product revenue **multiplied by 10^6** |
 | product_sku,      | 536      | 0     | (hits.prod.) ProductSKU                             |
 
-### TABLE 8: category: [15,134 rows, 5 original columns]
+#### TABLE 8: category: [15,134 rows, 5 original columns]
 
 | Column Name          | Distinct | NULLs | Definition of contained values: |
 | -------------------- | -------- | ----- | ------------------------------- |
@@ -519,7 +519,7 @@ ALTER TABLE all_sessions
 | v2_product_category, | 74       | 0     | (hits.prod.) Product Category   |
 | product_variant,     | 11       | 0     | (hits.prod.) Product Variant    |
 
-### TABLE 9: ecommerce_hits: [15,134 rows, 3 original columns]
+#### TABLE 9: ecommerce_hits: [15,134 rows, 3 original columns]
 
 | Column Name             | Distinct | NULLs | Definition of contained values:                    |
 | ----------------------- | -------- | ----- | -------------------------------------------------- |
@@ -541,7 +541,7 @@ ALTER TABLE all_sessions
 1.  = Refund of purchase
 1.  = Checkout options
 
-### TABLE 10: transaction_hits: [15,134 rows, 4 original columns]
+#### TABLE 10: transaction_hits: [15,134 rows, 4 original columns]
 
 | Column Name                | Distinct | NULLs | Definition of contained values:                              |
 | -------------------------- | -------- | ----- | ------------------------------------------------------------ |
@@ -550,7 +550,7 @@ ALTER TABLE all_sessions
 | total_transaction_revenue, | 72       | 15053 | (totals.) Total transaction revenue _**multiplied by 10^6**_ |
 | transaction_id,            | 9        | 15125 | (hits.tr.) Transaction id of the ecommerce transaction       |
 
-### TABLE 11: totals: [15,134 rows, 5 original columns]
+#### TABLE 11: totals: [15,134 rows, 5 original columns]
 
 | Column Name                | Distinct | NULLs | Definition of contained values:                                |
 | -------------------------- | -------- | ----- | -------------------------------------------------------------- |
@@ -560,32 +560,32 @@ ALTER TABLE all_sessions
 | page_views,                | 29       | 0     | (totals.) Number of page views from within the session         |
 | session_quality_dim,       | 45       | 13906 | (totals.) Quality estimate if 'close' or 'far' to transaction  |
 
-### TABLE 12: page_analytics: [15,134 rows, 2 original columns]
+#### TABLE 12: page_analytics: [15,134 rows, 2 original columns]
 
 | Column Name       | Distinct | NULLs | Definition of contained values:                                        |
 | ----------------- | -------- | ----- | ---------------------------------------------------------------------- |
 | page_title,       | 269      | 1     | (hits.page.)Title of Page                                              |
 | page_path_level1, | 11       | 0     | (hits.page.) All the page paths rolled into the 1st hierarchical level |
 
-### TABLE 13: geo_visitor: [15,134 rows, 2 original columns]
+#### TABLE 13: geo_visitor: [15,134 rows, 2 original columns]
 
 | Column Name | Distinct | NULLs | Definition of contained values:                       |
 | ----------- | -------- | ----- | ----------------------------------------------------- |
 | city,       | 266      | 0     | (geoNetwork.) Visitor's city by IP or Geographical ID |
 | country,    | 136      | 0     | (geoNetwork.) Visitor's country by IP                 |
 
-### TABLE 14: hits: [15,134 rows, 2 original columns]
+#### TABLE 14: hits: [15,134 rows, 2 original columns]
 
 | Column Name | Distinct | NULLs | Definition of contained values:                                           |
 | ----------- | -------- | ----- | ------------------------------------------------------------------------- |
 | type,       | 2        | 0     | (hits.) one of PAGE, TRANSACTION, ITEM, EVENT, SOCIAL, APPVIEW, EXCEPTION |
 | time,       | 9600     | 0     | (hits.) From visit\*start*time to hit registered \_in ms*                 |
 
-#### DATA TYPE CONVERSIONS: transaction_hits TABLE
+### DATA TRANSFORMATIONS: transaction_hits TABLE
 
 Saving query results to csv formats null values as string 'NULL' which were cleaned by the following:
 
-##### Column transaction_revenue:
+##### COLUMN transaction_revenue:
 
 _SQL UPDATE - SET_
 
@@ -614,7 +614,7 @@ SELECT *
 FROM transaction_hits
 ```
 
-##### Column transaction_id:
+##### COLUMN transaction_id:
 
 ```sql
 UPDATE transaction_hits
@@ -626,7 +626,7 @@ SELECT *
 FROM transaction_hits
 ```
 
-##### Column total_transaction_revenue:
+##### COLUMN total_transaction_revenue:
 
 ```sql
 -- Fix string formated 'NULL' values:
@@ -648,7 +648,7 @@ SELECT *
 FROM transaction_hits
 ```
 
-##### Column currency_code:
+##### COLUMN currency_code:
 
 ```sql
 -- Fix string formated 'NULL' values:
@@ -665,15 +665,96 @@ WHERE currency_code IS NULL
 
 #### DATA TYPE CONVERSIONS: product_hits TABLE
 
-As per the Tables
+As per the Table 7 for the following cleaning requirements:
 
-##### Column product_quantity:
+##### COLUMN product_quantity:
 
-##### Column product_price:
+```sql
+-- Remove string converted "NULL" values:
+UPDATE product_hits
+SET product_quantity = null
+WHERE product_quantity LIKE upper('%NULL%')
 
-##### Column product_revenue:
+-- Cast column type to numeric:
+ALTER TABLE product_hits
+ALTER COLUMN product_quantity TYPE NUMERIC
+USING product_quantity::numeric;
 
-##### Column product_sku:
+-- Confirm results:
+SELECT *
+FROM product_hits
+```
+
+##### COLUMN product_price:
+
+```sql
+-- Cast column type to numeric:
+ALTER TABLE product_hits
+ALTER COLUMN product_price TYPE NUMERIC
+USING product_price::numeric;
+
+-- Adjust for financial multiplier of 10^6:
+UPDATE category
+SET product_price = product_price * 0.000001
+
+-- Remove 0 values after stripping multiplier:
+UPDATE product_hits
+SET product_price = NULL
+WHERE product_price = 0
+
+-- Confirm results:
+SELECT *
+FROM product_hits
+```
+
+##### COLUMN product_revenue:
+
+```sql
+-- Remove string converted "NULL" values:
+UPDATE product_hits
+SET product_revenue = null
+WHERE product_revenue LIKE upper('%NULL%')
+
+-- Cast column type to numeric:
+ALTER TABLE product_hits
+ALTER COLUMN product_revenue TYPE NUMERIC
+USING product_revenue::numeric;
+
+-- Adjust for financial multiplier of 10^6:
+UPDATE product_hits
+SET product_revenue = product_revenue * 0.000001
+
+-- Confirm results:
+SELECT *
+FROM product_hits
+```
+
+##### COLUMN product_sku:
+
+#### DATA TRANSFORMATIONS: category TABLE:
+
+ALTER TABLE category
+ALTER COLUMN product_price TYPE NUMERIC
+USING product_price::numeric;
+
+#### DATA TRANSFORMATIONS: geo_visitor TABLE:
+
+```sql
+-- Fix string formated 'NULL' values:
+UPDATE transaction_hits
+SET total_transaction_revenue = null
+WHERE total_transaction_revenue LIKE upper('%NULL%')
+```
+
+#### DATA TRANSFORMATIONS: category TABLE:
+
+#### DATA TRANSFORMATIONS: category TABLE:
+
+#### DATA TRANSFORMATIONS: category TABLE:
+
+#### DATA TRANSFORMATIONS: category TABLE:
+
+#### DATA TRANSFORMATIONS: category TABLE:
 
 # `WIP`-----------------------------------------------------------------------`WIP`
 
