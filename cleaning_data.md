@@ -28,7 +28,7 @@ The primary goal of data cleaning is to learn everything we can about the inform
 
 ## Discussion:
 
-(Did we win?) The primary goals of coming to understand the data were achieved. (answers to the rambling bungle of questions above can be breifly summarized here...)
+I have come to learn the following about the data:
 
 ### TABLE 1: all_sessions: [15,134 rows, 33 columns]
 
@@ -140,8 +140,6 @@ The primary goal of data cleaning is to learn everything we can about the inform
 
 ## Methods and Procedure: Queries
 
-.....(and this is how I did it)
-
 ### STEP 1: Getting Oriented with the Data.
 
 #### Title and Naming consistency:
@@ -158,7 +156,7 @@ RENAME COLUMN fullVisitorId TO full_visitor_id;
 
 #### Number of unique/duplicate values:
 
-Table shape was determined with simple select statements for total rows. The resulting values plus the known number of columns title Tables 1-5 in Discussion.
+Table shape was determined with simple select statements for total rows. The resulting values plus the known number of columns, title the Tables 1-5 in Discussion.
 
 _SQL SELECT_:
 
@@ -182,12 +180,6 @@ ORDER BY 2 DESC;
 SELECT COUNT(*)
 FROM all_sessions
 WHERE full_visitor_id IS NULL;
-```
-
-#### Create (Temp?) new table:
-
-```sql
-
 ```
 
 #### Query for full table row duplications:
@@ -218,7 +210,7 @@ AND al.visit_id = d.visit_id
 -- Uncommenting the lines in the function Returns 0 row duplications
 ```
 
-NOTE: `all_sessions` appeared to have 459 counted duplications when queried on the paired sets of `full_visitor_id`, `visit_id`.
+NOTE: `all_sessions` appeared to have 459 counted duplications when queried on the paired sets of `full_visitor_id`, `visit_id`; which are together considered a unique identifier, see reference [4].
 
 Adding the third `product_sku` value to the matching sets however returned no duplications.
 
@@ -264,16 +256,9 @@ WITH dup_rows AS (
 )
 	AS num_unique
 FROM analytics an
--- Returns 870577 values (~20%)
 
--- Further inquiry required.
+-- Returns 870577 duplicate rows (~20%)
 ```
-
----
-
-ERD for end of Part 1
-
-![]()
 
 ---
 
@@ -754,8 +739,6 @@ SELECT *
 FROM product_hits
 ```
 
-##### COLUMN product_sku:
-
 #### DATA TRANSFORMATIONS: category TABLE:
 
 ALTER TABLE category
@@ -847,157 +830,11 @@ SELECT * FROM public.products_category
 #### DATA TRANSFORMATIONS: geo_visitor TABLE:
 
 ```sql
--- Fix string formated 'NULL' values:
+-- Fix string formatted 'NULL' values:
 UPDATE transaction_hits
 SET total_transaction_revenue = null
 WHERE total_transaction_revenue LIKE upper('%NULL%')
 ```
-
-#### DATA TRANSFORMATIONS: category TABLE:
-
-#### DATA TRANSFORMATIONS: category TABLE:
-
-#### DATA TRANSFORMATIONS: category TABLE:
-
-#### DATA TRANSFORMATIONS: category TABLE:
-
-#### DATA TRANSFORMATIONS: category TABLE:
-
-# `WIP`-----------------------------------------------------------------------`WIP`
-
-#### Group values: Consistency?
-
-_SQL LIKE_
-
-```sql
--- find values by string values to find typos etc
--- This ex: Find all facilities whose name BEGINS with 'Tennis'
-SELECT * FROM cd.facilities
-WHERE UPPER(name) LIKE 'TENNIS%'
--- This ex: Find all facilities whose name CONTAINS  'Tennis'
-SELECT * FROM cd.facilities
-WHERE UPPER(name) LIKE '%TENNIS%'
--- Strings can be searched using the regex  ~ operator too. this ex looks for '()'
-SELECT memid, telephone FROM cd.members
-WHERE telephone ~ '[()]';
-
-```
-
-_SQL LPAD_
-
-```sql
--- This example pads member zipcodes with zeros
-SELECT LPAD(CAST(zipcode AS CHAR(5)),5,'0') zip
-FROM cd.members
-ORDER BY zip;
-```
-
-_SQL TRANSLATE_
-
-```sql
--- This ex takes the '-() ' symbols out of the phonenumbers list and replaces them with the empty string (TRANSLATE(input string, CHARs to remove, new chars))
-SELECT memid, TRANSLATE(telephone, '-() ', '') AS telephone
-FROM cd.members
-ORDER BY memid;
-```
-
-#### Useful Merges?:
-
-_SQL CONCATENATION_:
-
-```sql
--- Some systems (like SQL Server) use +, but || is the SQL standard.
-SELECT surname||', '||firstname
-FROM cd.members;
--- REF: https://pgexercises.com/questions/string/concat.html
-```
-
-_SQL COALESCE_
-
-```SQL
--- COALESCE takes a list of input values and returns the first value that IS NOT NULL
-WITH class_count AS (
-SELECT student_id, COUNT(*) AS num_of_class
-FROM class_history
-GROUP BY student_id
-)
-SELECT
-COALESCE(c.student_id, s.student_id) AS student_id,
-s.student_name,
-COALESCE(c.num_of_class, 0) AS num_of_class
-FROM class_count c
-_____ student s ON c.student_id = s.student_id
-```
-
-_SQL EXTRACT_
-
-```SQL
--- Extract time components from timestamps to summarize data:
-SELECT
-	  facid
-	, EXTRACT(MONTH FROM starttime) AS month
-	, SUM(slots) AS total
-FROM cd.bookings
-WHERE EXTRACT(YEAR FROM starttime) = 2012
-GROUP BY 1, 2
-ORDER BY 1, 2;
-```
-
-#### Useful splits?:
-
-```sql
-
-```
-
-```sql
-
-```
-
-#### Renaming a table:
-
-```sql
-
-```
-
-#### Statistical summary of the categorical values:
-
-```sql
-
-```
-
-#### Statistical summary of the numerical values: Are there ouliers?
-
-```sql
-
-```
-
-### STEP 3: Transforming the Data
-
-> "The first phase of data transformations should include things like data type conversion and flattening of hierarchical data...
-
-> Parsing fields out of comma-delimited log data for loading to a relational database is an example of this type of data transformation....
-
-> Data transformation is often concerned with whittling data down and making it more manageable. Data may be consolidated by filtering out unnecessary fields, columns, and records. Omitted data might include numerical indexes in data intended for graphs and dashboards or records from business regions that aren’t of interest in a particular study...
-
-> Data might also be aggregated or summarized. by, for instance, transforming a time series of customer transactions to hourly or daily sales counts.
-
-- A customer’s transactions can be rolled up into a grand total and added into a customer information table for quicker reference or for use by customer analytics systems.
-- Long or freeform fields may be split into multiple columns,
-- and missing values can be imputed or corrupted data replaced as a result of these kinds of transformations."
-
-REF: https://www.stitchdata.com/resources/data-transformation/
-
-### STEP 4: Load Data Back into the DB
-
----
-
-_Other notes?_
-
-_Definitions?_
-
-_Abreviations?_
-
----
 
 ## References
 
