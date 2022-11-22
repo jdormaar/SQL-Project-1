@@ -73,31 +73,14 @@ What is the average number of products ordered from visitors in each city and co
 ```sql
 -- Average number of products ordered by country
 SELECT
-    country
+    g.country
   , ROUND(AVG(product_quantity)) AS country_quantity
-FROM all_sessions
+FROM product_hits
+JOIN geo_visitor as g USING (alls_id)
 WHERE product_quantity IS NOT NULL
-GROUP BY country
+GROUP BY g.country
 ORDER BY country_quantity DESC;
 ```
-
-#### Average number of products ordered, for each city:
-
-```sql
--- Average number of products ordered by city
-
-SELECT
-    city
-  , country
-  , ROUND(AVG(product_quantity)) AS city_quantity
-FROM all_sessions
-WHERE product_quantity IS NOT NULL
-  AND city IS NOT NULL
-GROUP BY city, country
-ORDER BY city_quantity DESC;
-```
-
-### Answer:
 
 Average number of products ordered by country:
 
@@ -113,6 +96,23 @@ Average number of products ordered by country:
 | Mexico        | 1                |
 | India         | 1                |
 | Canada        | 1                |
+
+#### Average number of products ordered, for each city:
+
+```sql
+-- Average number of products ordered by city
+
+SELECT
+    city
+  , g.country
+  , ROUND(AVG(product_quantity)) AS city_quantity
+FROM product_hits
+JOIN geo_visitor as g USING (alls_id)
+WHERE product_quantity IS NOT NULL
+  AND city IS NOT NULL
+GROUP BY g.city, g.country
+ORDER BY city_quantity DESC;
+```
 
 Average number of products ordered by city:
 
@@ -146,39 +146,17 @@ Is there any pattern in the types (product categories) of products ordered from 
 
 ```sql
 SELECT
-    city
-  , country
+    g.city
+  , g.country
   , v2_product_category
   , v2_product_name
-FROM all_sessions
+  , sub_cat_3
+  , sub_cat_1
+  , sub_cat_2
+FROM products_category
+JOIN geo_visitor as g USING (alls_id)
 WHERE product_quantity IS NOT NULL
-  AND city IS NOT NULL
-GROUP BY city, country, v2_product_category, v2_product_name
-ORDER BY city DESC;
+  AND g.city IS NOT NULL
+GROUP BY g.city, g.country, v2_product_category, v2_product_name, sub_cat_1 , sub_cat_2 , sub_cat_3
+ORDER BY g.city DESC;
 ```
-
-### Answer:
-
-## Question 4
-
-What is the top-selling product from each city/country? Can we find any pattern worthy of noting in the products sold?
-
-### SQL Queries:
-
-```sql
-
-```
-
-### Answer:
-
-## Question 5
-
-Can we summarize the impact of revenue generated from each city/country?
-
-### SQL Queries:
-
-```sql
-
-```
-
-### Answer:
